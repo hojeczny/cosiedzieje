@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>coSięDzieje — Poznań i Powiat Poznański</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #FAFAF8;
+      --bg-card: #FFFFFF;
+      --bg-surface: #F3F2EE;
+      --text-primary: #1A1915;
+      --text-secondary: #5A5950;
+      --text-muted: #9A9890;
+      --border: rgba(26,25,21,0.1);
+      --border-hover: rgba(26,25,21,0.22);
+      --accent: #D85A30;
+      --accent-dark: #993C1D;
+      --accent-light: #FAECE7;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+      --shadow-hover: 0 4px 12px rgba(0,0,0,0.1), 0 8px 32px rgba(0,0,0,0.06);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #141410;
+        --bg-card: #1E1D19;
+        --bg-surface: #252420;
+        --text-primary: #F0EFE8;
+        --text-secondary: #A8A79F;
+        --text-muted: #6A6960;
+        --border: rgba(240,239,232,0.1);
+        --border-hover: rgba(240,239,232,0.22);
+        --accent: #E06A40;
+        --accent-dark: #F07A50;
+        --accent-light: rgba(216,90,48,0.15);
+        --shadow-card: 0 1px 3px rgba(0,0,0,0.3);
+        --shadow-hover: 0 4px 20px rgba(0,0,0,0.4);
+      }
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ── HEADER ── */
+    header {
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+
+    .header-inner {
+      max-width: 1100px; margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    }
+
+    .logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 26px; line-height: 1;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+      text-decoration: none;
+    }
+    .logo em { font-style: italic; color: var(--accent); }
+
+    .header-right {
+      display: flex; align-items: center; gap: 1rem;
+    }
+
+    .header-location {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--text-muted);
+    }
+
+    .header-date {
+      font-size: 12px; color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    /* ── HERO BAND ── */
+    .hero-band {
+      background: var(--accent);
+      color: #fff;
+      text-align: center;
+      padding: 3.5rem 1.5rem 3rem;
+    }
+
+    .hero-band h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(32px, 5vw, 54px);
+      font-weight: 400; line-height: 1.1;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero-band h1 em { font-style: italic; opacity: 0.75; }
+
+    .hero-band p {
+      font-size: 15px; opacity: 0.8; max-width: 480px; margin: 0 auto 1.5rem;
+      font-weight: 300;
+    }
+
+    .hero-count {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 999px; padding: 6px 16px;
+      font-size: 13px; font-weight: 500;
+    }
+
+    .hero-dot { width: 6px; height: 6px; border-radius: 50%; background: #fff; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+
+    /* ── MAIN ── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+    /* ── TABS ── */
+    .tabs-wrap {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap;
+    }
+
+    .tabs {
+      display: flex; gap: 0;
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      overflow: hidden; background: var(--bg-surface);
+    }
+
+    .tab-btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px; font-weight: 400;
+      padding: 9px 20px; border: none; background: transparent;
+      color: var(--text-muted); cursor: pointer;
+      transition: all 0.15s;
+      border-right: 1px solid var(--border);
+    }
+    .tab-btn:last-child { border-right: none; }
+    .tab-btn:hover { color: var(--text-secondary); background: var(--border); }
+    .tab-btn.active { background: var(--accent); color: #fff; font-weight: 500; }
+
+    .ev-total { font-size: 13px; color: var(--text-muted); }
+    .ev-total strong { color: var(--text-primary); font-weight: 500; }
+
+    /* ── GMINA BAR ── */
+    .gmina-bar {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      padding: 10px 14px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 1.25rem;
+    }
+
+    .gmina-label {
+      font-size: 11px; color: var(--text-muted);
+      letter-spacing: 1.5px; text-transform: uppercase;
+      margin-right: 4px; flex-shrink: 0;
+    }
+
+    .gmina-btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px; padding: 5px 13px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-secondary); cursor: pointer;
+      transition: all 0.12s;
+    }
+    .gmina-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .gmina-btn.active { background: var(--accent-dark); border-color: var(--accent-dark); color: #fff; }
+
+    /* ── CAT FILTERS ── */
+    .filters {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 2rem;
+    }
+
+    .chip {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px; padding: 6px 15px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer; transition: all 0.15s;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .chip:hover { border-color: var(--border-hover); background: var(--bg-surface); }
+    .chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    .chip-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+    /* ── STATS ROW ── */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+    }
+
+    .stat-label { font-size: 10px; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; }
+    .stat-value { font-size: 24px; font-weight: 500; color: var(--text-primary); line-height: 1; }
+    .stat-sub { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
+    /* ── FEATURED GRID ── */
+    .featured-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+      margin-bottom: 2rem;
+    }
+
+    /* BIG CARD */
+    .card-big {
+      grid-column: 1 / -1;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+      display: flex; gap: 2rem; align-items: center;
+      text-decoration: none; color: inherit;
+      box-shadow: var(--shadow-card);
+      transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .card-big::after {
+      content: '';
+      position: absolute; top: 0; right: 0;
+      width: 240px; height: 100%;
+      background: linear-gradient(135deg, #FAC775 0%, #D85A30 55%, #993C1D 100%);
+      opacity: 0.08;
+      border-radius: 0 var(--radius-xl) var(--radius-xl) 0;
+      pointer-events: none;
+    }
+    .card-big:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); border-color: var(--border-hover); }
+
+    .date-block {
+      flex-shrink: 0; width: 72px; height: 72px;
+      border-radius: 14px; background: var(--accent);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; color: #fff;
+    }
+    .date-block .day { font-size: 26px; font-weight: 500; line-height: 1; }
+    .date-block .mon { font-size: 10px; font-weight: 300; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px; }
+
+    .card-big-info { flex: 1; min-width: 0; }
+
+    .badge-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+
+    .badge {
+      font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+      font-weight: 500; padding: 4px 11px; border-radius: 999px;
+    }
+    .badge-feat { background: var(--accent-light); color: var(--accent); }
+    .badge-gmina { background: #FAEEDA; color: #854F0B; }
+
+    @media (prefers-color-scheme: dark) {
+      .badge-gmina { background: rgba(186,117,23,0.2); color: #EF9F27; }
+    }
+
+    .card-big-info h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 24px; font-weight: 400; line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .card-big-info p { font-size: 14px; color: var(--text-secondary); line-height: 1.55; }
+
+    .card-meta {
+      display: flex; align-items: center; gap: 6px;
+      margin-top: 12px; font-size: 13px; color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+
+    .card-meta .sep { opacity: 0.4; }
+
+    .card-arrow {
+      flex-shrink: 0; width: 40px; height: 40px;
+      border-radius: 50%; border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted); transition: all 0.15s;
+    }
+    .card-big:hover .card-arrow { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    /* SMALL CARD */
+    .card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1.25rem;
+      text-decoration: none; color: inherit;
+      box-shadow: var(--shadow-card);
+      transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); border-color: var(--border-hover); }
+
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .card-date { font-size: 11px; color: var(--text-muted); }
+
+    .cat-pill {
+      font-size: 10px; font-weight: 500; padding: 3px 9px;
+      border-radius: 999px; white-space: nowrap; flex-shrink: 0;
+    }
+    .cat-muzyka   { background: #E1F5EE; color: #0F6E56; }
+    .cat-sztuka   { background: #EEEDFE; color: #3C3489; }
+    .cat-sport    { background: #EAF3DE; color: #3B6D11; }
+    .cat-targi    { background: #FAEEDA; color: #854F0B; }
+    .cat-kultura  { background: #FAECE7; color: #993C1D; }
+    .cat-film     { background: #FBEAF0; color: #72243E; }
+    .cat-rodzinne { background: #E6F1FB; color: #185FA5; }
+
+    @media (prefers-color-scheme: dark) {
+      .cat-muzyka   { background: rgba(29,158,117,0.2); color: #5DCAA5; }
+      .cat-sztuka   { background: rgba(127,119,221,0.2); color: #AFA9EC; }
+      .cat-sport    { background: rgba(99,153,34,0.2); color: #97C459; }
+      .cat-targi    { background: rgba(186,117,23,0.2); color: #EF9F27; }
+      .cat-kultura  { background: rgba(216,90,48,0.2); color: #F0997B; }
+      .cat-film     { background: rgba(212,83,126,0.2); color: #ED93B1; }
+      .cat-rodzinne { background: rgba(55,138,221,0.2); color: #85B7EB; }
+    }
+
+    .card h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 17px; font-weight: 400; line-height: 1.3;
+      flex: 1;
+    }
+
+    .card-where {
+      font-size: 12px; color: var(--text-muted);
+      display: flex; align-items: center; gap: 5px; flex-wrap: wrap;
+    }
+
+    .gmina-tag {
+      font-size: 10px; color: #854F0B; background: #FAEEDA;
+      padding: 2px 7px; border-radius: 999px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .gmina-tag { background: rgba(186,117,23,0.2); color: #EF9F27; }
+    }
+
+    .card-price {
+      font-size: 13px; font-weight: 500; color: var(--text-secondary);
+      padding-top: 10px; border-top: 1px solid var(--border);
+      margin-top: auto;
+    }
+
+    /* ── LIST ── */
+    .section-title {
+      font-size: 11px; font-weight: 500; color: var(--text-muted);
+      letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 1rem; margin-top: 0.5rem;
+    }
+
+    .ev-list { display: flex; flex-direction: column; }
+
+    .list-item {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none; color: inherit;
+      transition: opacity 0.15s;
+    }
+    .list-item:hover { opacity: 0.65; }
+    .list-item:last-child { border-bottom: none; }
+
+    .list-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .dot-muzyka   { background: #1D9E75; }
+    .dot-sztuka   { background: #7F77DD; }
+    .dot-sport    { background: #639922; }
+    .dot-targi    { background: #BA7517; }
+    .dot-kultura  { background: #D85A30; }
+    .dot-film     { background: #D4537E; }
+    .dot-rodzinne { background: #378ADD; }
+
+    .list-info { flex: 1; min-width: 0; }
+    .list-info strong { display: block; font-size: 14px; font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .list-sub { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; flex-wrap: wrap; margin-top: 2px; }
+
+    .list-right { text-align: right; flex-shrink: 0; }
+    .list-date { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
+    .list-price { font-size: 11px; color: var(--text-muted); }
+
+    /* ── EMPTY ── */
+    .ev-empty {
+      padding: 3rem 0; text-align: center;
+      color: var(--text-muted); font-size: 14px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      margin-top: 4rem;
+      padding: 2rem 1.5rem;
+    }
+
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: flex-start;
+      gap: 2rem; flex-wrap: wrap;
+    }
+
+    .footer-brand .logo { font-size: 20px; }
+    .footer-brand p { font-size: 12px; color: var(--text-muted); margin-top: 6px; max-width: 280px; line-height: 1.5; }
+
+    .footer-sources h4 { font-size: 11px; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; }
+    .sources-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .source-chip {
+      font-size: 12px; color: var(--text-secondary);
+      border: 1px solid var(--border); border-radius: 999px;
+      padding: 4px 12px; text-decoration: none;
+      transition: all 0.15s;
+    }
+    .source-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+    .footer-copy {
+      margin-top: 2rem; padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      max-width: 1100px; margin-left: auto; margin-right: auto;
+      font-size: 11px; color: var(--text-muted);
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 680px) {
+      .featured-grid { grid-template-columns: 1fr; }
+      .card-big { flex-direction: column; gap: 1.25rem; }
+      .card-big::after { width: 100%; height: 120px; top: auto; bottom: 0; border-radius: 0 0 var(--radius-xl) var(--radius-xl); }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .header-date { display: none; }
+      .card-arrow { display: none; }
+    }
+
+    @media (max-width: 400px) {
+      .stats-row { grid-template-columns: 1fr; }
+      .tabs { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <a class="logo" href="#top">co<em>się</em>dzieje</a>
+      <div class="header-right">
+        <div class="header-location">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+            <path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6c0 3.5 4.5 8.5 4.5 8.5S12.5 9.5 12.5 6c0-2.5-2-4.5-4.5-4.5zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" fill="currentColor"/>
+          </svg>
+          Poznań &amp; powiat
+        </div>
+        <div class="header-date" id="hdr-date"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <div class="hero-band" id="top">
+    <h1>Wszystko co się <em>dzieje</em><br>w Twoim regionie</h1>
+    <p>Lokalne wydarzenia, festiwale, sport i kultura — Poznań i cały powiat poznański w jednym miejscu.</p>
+    <div class="hero-count">
+      <div class="hero-dot"></div>
+      <span id="hero-count">Ładowanie wydarzeń…</span>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <main class="container">
+
+    <div class="tabs-wrap">
+      <div class="tabs" id="ev-tabs">
+        <button class="tab-btn active" data-tab="poznan">🏙 Poznań</button>
+        <button class="tab-btn" data-tab="powiat">🌾 Powiat</button>
+        <button class="tab-btn" data-tab="all">🗺 Wszystkie</button>
+      </div>
+      <div class="ev-total">Znaleziono <strong id="ev-count">—</strong> wydarzeń</div>
+    </div>
+
+    <!-- GMINA FILTER (powiat only) -->
+    <div class="gmina-bar" id="gmina-bar" style="display:none;">
+      <span class="gmina-label">Gmina:</span>
+      <button class="gmina-btn active" data-gmina="all">Wszystkie</button>
+      <button class="gmina-btn" data-gmina="Kostrzyn">Kostrzyn wlkp.</button>
+      <button class="gmina-btn" data-gmina="Swarzędz">Swarzędz</button>
+      <button class="gmina-btn" data-gmina="Murowana Goślina">Murowana Goślina</button>
+      <button class="gmina-btn" data-gmina="Mosina">Mosina</button>
+      <button class="gmina-btn" data-gmina="Pobiedziska">Pobiedziska</button>
+      <button class="gmina-btn" data-gmina="Kórnik">Kórnik</button>
+      <button class="gmina-btn" data-gmina="Luboń">Luboń</button>
+    </div>
+
+    <!-- CAT FILTERS -->
+    <div class="filters" id="ev-filters">
+      <button class="chip active" data-cat="all"><span class="chip-dot" style="background:#888;"></span> Wszystkie</button>
+      <button class="chip" data-cat="muzyka"><span class="chip-dot" style="background:#1D9E75;"></span> Muzyka</button>
+      <button class="chip" data-cat="sztuka"><span class="chip-dot" style="background:#7F77DD;"></span> Sztuka</button>
+      <button class="chip" data-cat="kultura"><span class="chip-dot" style="background:#D85A30;"></span> Kultura</button>
+      <button class="chip" data-cat="sport"><span class="chip-dot" style="background:#639922;"></span> Sport</button>
+      <button class="chip" data-cat="targi"><span class="chip-dot" style="background:#BA7517;"></span> Targi</button>
+      <button class="chip" data-cat="rodzinne"><span class="chip-dot" style="background:#378ADD;"></span> Rodzinne</button>
+      <button class="chip" data-cat="film"><span class="chip-dot" style="background:#D4537E;"></span> Film</button>
+    </div>
+
+    <!-- STATS (powiat) -->
+    <div class="stats-row" id="ev-stats" style="display:none;"></div>
+
+    <!-- FEATURED GRID -->
+    <div class="featured-grid" id="ev-featured"></div>
+
+    <!-- LIST -->
+    <div class="section-title" id="ev-list-title">Nadchodzące</div>
+    <div class="ev-list" id="ev-list"></div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a class="logo" href="#top">co<em>się</em>dzieje</a>
+        <p>Lokalny portal wydarzeń dla Poznania i powiatu poznańskiego. Dane zbierane ze stron gmin, portali biletowych i serwisów kulturalnych.</p>
+      </div>
+      <div class="footer-sources">
+        <h4>Źródła danych</h4>
+        <div class="sources-grid">
+          <a class="source-chip" href="https://poznan.pl/wydarzenia" target="_blank" rel="noopener">poznan.pl</a>
+          <a class="source-chip" href="https://kostrzyn.wlkp.pl" target="_blank" rel="noopener">kostrzyn.wlkp.pl</a>
+          <a class="source-chip" href="https://swarzedz.pl" target="_blank" rel="noopener">swarzedz.pl</a>
+          <a class="source-chip" href="https://murowana-goslina.pl" target="_blank" rel="noopener">murowana-goslina.pl</a>
+          <a class="source-chip" href="https://mosina.pl" target="_blank" rel="noopener">mosina.pl</a>
+          <a class="source-chip" href="https://pobiedziska.pl" target="_blank" rel="noopener">pobiedziska.pl</a>
+          <a class="source-chip" href="https://zamek-kornik.pl" target="_blank" rel="noopener">zamek-kornik.pl</a>
+          <a class="source-chip" href="https://lubon.pl" target="_blank" rel="noopener">lubon.pl</a>
+          <a class="source-chip" href="https://evenea.pl" target="_blank" rel="noopener">evenea.pl</a>
+          <a class="source-chip" href="https://bilety24.pl" target="_blank" rel="noopener">bilety24.pl</a>
+          <a class="source-chip" href="https://ebilet.pl" target="_blank" rel="noopener">ebilet.pl</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-copy">
+      <span>© 2025 coSięDzieje — Poznań &amp; Powiat Poznański</span>
+      <span>Aktualizowane manualnie · dane poglądowe</span>
+    </div>
+  </footer>
+
+  <script>
+    // ── DATA ──
+    const EVENTS = [
+      // POZNAŃ
+      { id:1,  region:'poznan', featured:true,
+        title:"Poznań Jazz Festival 2025",
+        desc:"Największy jazzowy festiwal w Wielkopolsce. Gwiazdy polskiej i europejskiej sceny jazzowej na trzech scenach przez dwa dni.",
+        cat:"muzyka", day:"12", mon:"kwi", date:"12–13 kwi 2025",
+        loc:"Centrum Kultury Zamek, Poznań", price:"od 89 zł",
+        link:"https://poznan.pl/wydarzenia" },
+
+      { id:2,  region:'poznan', featured:false,
+        title:"Wystawa: Hyperrealizm PL",
+        cat:"sztuka", day:"10", mon:"kwi", date:"10 kwi – 8 cze 2025",
+        loc:"Muzeum Narodowe, Poznań", price:"18 zł",
+        link:"https://mnp.art.pl" },
+
+      { id:3,  region:'poznan', featured:false,
+        title:"Targi Książki Poznań 2025",
+        cat:"targi", day:"25", mon:"kwi", date:"25–27 kwi 2025",
+        loc:"MTP Poznań, Hala 5", price:"Wstęp wolny",
+        link:"https://poznan.pl/wydarzenia" },
+
+      { id:4,  region:'poznan', featured:false,
+        title:"Biathlon Wielkopolski Run",
+        cat:"sport", day:"13", mon:"kwi", date:"13 kwi 2025",
+        loc:"Jezioro Maltańskie, Poznań", price:"od 45 zł",
+        link:"https://evenea.pl" },
+
+      { id:5,  region:'poznan', featured:false,
+        title:"Noc Teatrów 2025",
+        cat:"kultura", day:"19", mon:"kwi", date:"19 kwi 2025",
+        loc:"Teatr Wielki & Teatr Nowy, Poznań", price:"Wstęp wolny",
+        link:"https://poznan.pl/wydarzenia" },
+
+      { id:6,  region:'poznan', featured:false,
+        title:"Kino Plenerowe: Nowe Horyzonty",
+        cat:"film", day:"20", mon:"kwi", date:"20 kwi 2025",
+        loc:"Park Cytadela, Poznań", price:"25 zł",
+        link:"https://kinonh.pl" },
+
+      { id:7,  region:'poznan', featured:false,
+        title:"Wernisaż: Fotografia Uliczna",
+        cat:"sztuka", day:"15", mon:"kwi", date:"15 kwi 2025",
+        loc:"Galeria Miejska Arsenał, Poznań", price:"Wstęp wolny",
+        link:"https://arsenalpoznan.pl" },
+
+      { id:8,  region:'poznan', featured:false,
+        title:"Koncert: Natalia Przybysz",
+        cat:"muzyka", day:"30", mon:"kwi", date:"30 kwi 2025",
+        loc:"Klub Dragon, Poznań", price:"69 zł",
+        link:"https://bilety24.pl" },
+
+      { id:9,  region:'poznan', featured:false,
+        title:"Półmaraton Poznański",
+        cat:"sport", day:"6", mon:"maj", date:"6 maj 2025",
+        loc:"Stare Miasto, Poznań", price:"od 65 zł",
+        link:"https://polmaratonpoznanski.pl" },
+
+      { id:10, region:'poznan', featured:false,
+        title:"Festiwal Filmów Animowanych",
+        cat:"film", day:"3", mon:"maj", date:"3–5 maj 2025",
+        loc:"Kino Muza, Poznań", price:"22 zł",
+        link:"https://kinomuza.pl" },
+
+      // KOSTRZYN WLKP.
+      { id:11, region:'powiat', gmina:'Kostrzyn', featured:false,
+        title:"Dni Kostrzyna 2025",
+        desc:"Coroczne święto miasta z koncertami, jarmarkiem rękodzieła i pokazem ogni sztucznych nad Wartą.",
+        cat:"kultura", day:"26", mon:"kwi", date:"26–27 kwi 2025",
+        loc:"Rynek, Kostrzyn wlkp.", price:"Wstęp wolny",
+        link:"https://kostrzyn.wlkp.pl" },
+
+      { id:12, region:'powiat', gmina:'Kostrzyn', featured:false,
+        title:"Bieg Warciański",
+        cat:"sport", day:"3", mon:"maj", date:"3 maj 2025",
+        loc:"Bulwar Nadwarciański, Kostrzyn wlkp.", price:"od 30 zł",
+        link:"https://kostrzyn.wlkp.pl" },
+
+      { id:13, region:'powiat', gmina:'Kostrzyn', featured:false,
+        title:"Majówka Rodzinna w GOK",
+        cat:"rodzinne", day:"1", mon:"maj", date:"1 maj 2025",
+        loc:"Gminny Ośrodek Kultury, Kostrzyn wlkp.", price:"Wstęp wolny",
+        link:"https://kostrzyn.wlkp.pl" },
+
+      { id:14, region:'powiat', gmina:'Kostrzyn', featured:false,
+        title:"Kiermasz Wielkanocny",
+        cat:"targi", day:"13", mon:"kwi", date:"13 kwi 2025",
+        loc:"Plac przy Urzędzie Gminy, Kostrzyn wlkp.", price:"Wstęp wolny",
+        link:"https://kostrzyn.wlkp.pl" },
+
+      { id:15, region:'powiat', gmina:'Kostrzyn', featured:false,
+        title:"Koncert Chóru Cantabile",
+        cat:"muzyka", day:"20", mon:"kwi", date:"20 kwi 2025",
+        loc:"Kościół pw. NMP, Kostrzyn wlkp.", price:"Wstęp wolny",
+        link:"https://kostrzyn.wlkp.pl" },
+
+      // SWARZĘDZ
+      { id:16, region:'powiat', gmina:'Swarzędz', featured:false,
+        title:"Noce Muzyczne nad Jeziorem Swarzędzkim",
+        cat:"muzyka", day:"18", mon:"kwi", date:"18 kwi 2025",
+        loc:"Amfiteatr, Swarzędz", price:"Wstęp wolny",
+        link:"https://swarzedz.pl" },
+
+      { id:17, region:'powiat', gmina:'Swarzędz', featured:false,
+        title:"Piknik Rodzinny: Wiosna w Swarzędzu",
+        cat:"rodzinne", day:"27", mon:"kwi", date:"27 kwi 2025",
+        loc:"Park Miejski, Swarzędz", price:"Wstęp wolny",
+        link:"https://swarzedz.pl" },
+
+      { id:18, region:'powiat', gmina:'Swarzędz', featured:false,
+        title:"Targi Meblarskie Swarzędz 2025",
+        cat:"targi", day:"9", mon:"maj", date:"9–11 maj 2025",
+        loc:"Centrum Targowe, Swarzędz", price:"od 15 zł",
+        link:"https://swarzedz.pl" },
+
+      // MUROWANA GOŚLINA
+      { id:19, region:'powiat', gmina:'Murowana Goślina', featured:false,
+        title:"Zlot Pojazdów Zabytkowych",
+        cat:"kultura", day:"11", mon:"maj", date:"11 maj 2025",
+        loc:"Rynek, Murowana Goślina", price:"Wstęp wolny",
+        link:"https://murowana-goslina.pl" },
+
+      { id:20, region:'powiat', gmina:'Murowana Goślina', featured:false,
+        title:"Rajd Rowerowy: Pojezierze Gnieźnieńskie",
+        cat:"sport", day:"19", mon:"kwi", date:"19 kwi 2025",
+        loc:"Start: Centrum Murowana Goślina", price:"od 20 zł",
+        link:"https://murowana-goslina.pl" },
+
+      // MOSINA
+      { id:21, region:'powiat', gmina:'Mosina', featured:false,
+        title:"Festyn nad Wartą — Mosina",
+        cat:"rodzinne", day:"1", mon:"maj", date:"1 maj 2025",
+        loc:"Bulwar Nadwarciański, Mosina", price:"Wstęp wolny",
+        link:"https://mosina.pl" },
+
+      { id:22, region:'powiat', gmina:'Mosina', featured:false,
+        title:"Bieg o Puchar Burmistrza Mosiny",
+        cat:"sport", day:"17", mon:"maj", date:"17 maj 2025",
+        loc:"Park Miejski, Mosina", price:"od 25 zł",
+        link:"https://mosina.pl" },
+
+      // POBIEDZISKA
+      { id:23, region:'powiat', gmina:'Pobiedziska', featured:false,
+        title:"Turniej Rycerski — Gród Pobiedziska",
+        cat:"kultura", day:"3", mon:"maj", date:"3–4 maj 2025",
+        loc:"Gród Słowiański, Pobiedziska", price:"12 zł",
+        link:"https://pobiedziska.pl" },
+
+      { id:24, region:'powiat', gmina:'Pobiedziska', featured:false,
+        title:"Wiosenny Kiermasz Rękodzieła",
+        cat:"targi", day:"26", mon:"kwi", date:"26 kwi 2025",
+        loc:"Rynek, Pobiedziska", price:"Wstęp wolny",
+        link:"https://pobiedziska.pl" },
+
+      // KÓRNIK
+      { id:25, region:'powiat', gmina:'Kórnik', featured:false,
+        title:"Wiosna w Zamku Kórnickim",
+        cat:"kultura", day:"12", mon:"kwi", date:"12–13 kwi 2025",
+        loc:"Zamek Kórnicki, Kórnik", price:"18 zł",
+        link:"https://zamek-kornik.pl" },
+
+      { id:26, region:'powiat', gmina:'Kórnik', featured:false,
+        title:"Bieg przez Arboretum",
+        cat:"sport", day:"10", mon:"maj", date:"10 maj 2025",
+        loc:"Arboretum, Kórnik", price:"od 35 zł",
+        link:"https://kornik.pl" },
+
+      // LUBOŃ
+      { id:27, region:'powiat', gmina:'Luboń', featured:false,
+        title:"Luboński Festiwal Nauki",
+        cat:"rodzinne", day:"16", mon:"kwi", date:"16 kwi 2025",
+        loc:"Centrum Kultury, Luboń", price:"Wstęp wolny",
+        link:"https://lubon.pl" },
+
+      { id:28, region:'powiat', gmina:'Luboń', featured:false,
+        title:"Koncert Orkiestry Lubońskiej",
+        cat:"muzyka", day:"25", mon:"kwi", date:"25 kwi 2025",
+        loc:"Dom Kultury, Luboń", price:"Wstęp wolny",
+        link:"https://lubon.pl" },
+    ];
+
+    // ── STATE ──
+    let activeTab   = 'poznan';
+    let activeCat   = 'all';
+    let activeGmina = 'all';
+
+    // ── HELPERS ──
+    function todayStr() {
+      return new Date().toLocaleDateString('pl-PL', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+    }
+
+    function pinIcon(size = 12) {
+      return `<svg width="${size}" height="${size}" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6c0 3.5 4.5 8.5 4.5 8.5S12.5 9.5 12.5 6c0-2.5-2-4.5-4.5-4.5zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" fill="currentColor"/></svg>`;
+    }
+
+    function arrowIcon() {
+      return `<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    }
+
+    function getFiltered() {
+      let list = EVENTS;
+      if (activeTab === 'poznan') list = list.filter(e => e.region === 'poznan');
+      else if (activeTab === 'powiat') list = list.filter(e => e.region === 'powiat');
+      if (activeCat !== 'all') list = list.filter(e => e.cat === activeCat);
+      if (activeTab !== 'poznan' && activeGmina !== 'all') list = list.filter(e => e.gmina === activeGmina);
+      return list;
+    }
+
+    // ── RENDER STATS ──
+    function renderStats(list) {
+      const bar = document.getElementById('ev-stats');
+      if (activeTab === 'poznan') { bar.style.display = 'none'; return; }
+      bar.style.display = 'grid';
+      const gminy  = [...new Set(list.map(e => e.gmina).filter(Boolean))].length;
+      const sport  = list.filter(e => e.cat === 'sport').length;
+      const free   = list.filter(e => e.price === 'Wstęp wolny').length;
+      bar.innerHTML = `
+        <div class="stat-card"><div class="stat-label">Gminy</div><div class="stat-value">${gminy}</div><div class="stat-sub">w powiecie</div></div>
+        <div class="stat-card"><div class="stat-label">Wydarzeń</div><div class="stat-value">${list.length}</div><div class="stat-sub">łącznie</div></div>
+        <div class="stat-card"><div class="stat-label">Sportowe</div><div class="stat-value">${sport}</div><div class="stat-sub">wydarzeń</div></div>
+        <div class="stat-card"><div class="stat-label">Bezpłatne</div><div class="stat-value">${free}</div><div class="stat-sub">wstęp wolny</div></div>`;
+    }
+
+    // ── RENDER CARDS ──
+    function renderFeatured(list) {
+      const container = document.getElementById('ev-featured');
+      container.innerHTML = '';
+      const feat  = list.find(e => e.featured);
+      const cards = list.filter(e => !e.featured).slice(0, feat ? 2 : 3);
+
+      if (feat) {
+        container.innerHTML += `
+          <a class="card-big" href="${feat.link}" target="_blank" rel="noopener">
+            <div class="date-block"><span class="day">${feat.day}</span><span class="mon">${feat.mon}</span></div>
+            <div class="card-big-info">
+              <div class="badge-row">
+                <span class="badge badge-feat">Wyróżnione</span>
+                ${feat.gmina ? `<span class="badge badge-gmina">${feat.gmina}</span>` : ''}
+              </div>
+              <h2>${feat.title}</h2>
+              ${feat.desc ? `<p>${feat.desc}</p>` : ''}
+              <div class="card-meta">${pinIcon()} ${feat.loc} <span class="sep">·</span> ${feat.price}</div>
+            </div>
+            <div class="card-arrow">${arrowIcon()}</div>
+          </a>`;
+      }
+
+      cards.forEach(e => {
+        container.innerHTML += `
+          <a class="card" href="${e.link}" target="_blank" rel="noopener">
+            <div class="card-top">
+              <span class="card-date">${e.date}</span>
+              <span class="cat-pill cat-${e.cat}">${e.cat}</span>
+            </div>
+            <h3>${e.title}</h3>
+            <div class="card-where">${pinIcon()} ${e.loc} ${e.gmina ? `<span class="gmina-tag">${e.gmina}</span>` : ''}</div>
+            <div class="card-price">${e.price}</div>
+          </a>`;
+      });
+    }
+
+    // ── RENDER LIST ──
+    function renderList(list) {
+      const feat = list.find(e => e.featured);
+      const rest = list.filter(e => !e.featured).slice(feat ? 2 : 3);
+      const container = document.getElementById('ev-list');
+      container.innerHTML = '';
+
+      if (rest.length === 0) {
+        container.innerHTML = '<div class="ev-empty">Brak więcej wydarzeń w tym widoku.</div>';
+        return;
+      }
+
+      rest.forEach(e => {
+        container.innerHTML += `
+          <a class="list-item" href="${e.link}" target="_blank" rel="noopener">
+            <div class="list-dot dot-${e.cat}"></div>
+            <div class="list-info">
+              <strong>${e.title}</strong>
+              <div class="list-sub">${pinIcon(11)} ${e.loc} ${e.gmina ? `<span class="gmina-tag">${e.gmina}</span>` : ''}</div>
+            </div>
+            <div class="list-right">
+              <div class="list-date">${e.date}</div>
+              <div class="list-price">${e.price}</div>
+            </div>
+          </a>`;
+      });
+    }
+
+    // ── MAIN RENDER ──
+    function render() {
+      const list = getFiltered();
+      const gminaBar = document.getElementById('gmina-bar');
+      gminaBar.style.display = (activeTab !== 'poznan') ? 'flex' : 'none';
+      document.getElementById('ev-count').textContent = list.length;
+      document.getElementById('hero-count').textContent = list.length + ' aktualnych wydarzeń';
+      renderStats(list);
+      renderFeatured(list);
+      renderList(list);
+    }
+
+    // ── INIT DATE ──
+    document.getElementById('hdr-date').textContent = todayStr();
+
+    // ── EVENTS ──
+    document.getElementById('ev-tabs').addEventListener('click', e => {
+      const btn = e.target.closest('.tab-btn');
+      if (!btn) return;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeTab   = btn.dataset.tab;
+      activeGmina = 'all';
+      document.querySelectorAll('.gmina-btn').forEach(b => b.classList.toggle('active', b.dataset.gmina === 'all'));
+      render();
+    });
+
+    document.getElementById('ev-filters').addEventListener('click', e => {
+      const btn = e.target.closest('.chip');
+      if (!btn) return;
+      document.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeCat = btn.dataset.cat;
+      render();
+    });
+
+    document.getElementById('gmina-bar').addEventListener('click', e => {
+      const btn = e.target.closest('.gmina-btn');
+      if (!btn) return;
+      document.querySelectorAll('.gmina-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeGmina = btn.dataset.gmina;
+      render();
+    });
+
+    // ── START ──
+    render();
+  </script>
+</body>
+</html>
