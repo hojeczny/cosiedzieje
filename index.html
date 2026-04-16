@@ -176,6 +176,38 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
 .bar-val{font-family:'DM Mono',monospace;font-size:11px;width:55px;text-align:right;flex-shrink:0}
 .bar-val.highlight{font-weight:700;color:var(--b)}
 
+
+.q-comment-bar{border-top:1px solid var(--line);padding:8px 16px 8px 58px;
+  display:flex;align-items:center;gap:8px}
+.q-comment-btn{font-size:11px;color:var(--dim);background:none;border:none;
+  cursor:pointer;font-family:'DM Mono',monospace;padding:3px 8px;border-radius:5px;
+  transition:all .15s;display:inline-flex;align-items:center;gap:5px}
+.q-comment-btn:hover{background:var(--b2);color:var(--b)}
+.q-comment-btn.has-comment{color:var(--g);font-weight:500}
+.q-comment-area{display:none;border-top:1px solid var(--line);
+  padding:10px 16px 12px 58px;background:#fafbfc}
+.q-comment-area.open{display:block}
+.q-comment-input{width:100%;border:1px solid var(--line);border-radius:8px;
+  padding:8px 12px;font-size:12px;font-family:'DM Sans',sans-serif;
+  color:var(--ink);background:var(--white);resize:none;min-height:64px;
+  line-height:1.5;transition:border-color .15s;outline:none}
+.q-comment-input:focus{border-color:var(--b)}
+.q-comment-actions{display:flex;align-items:center;gap:8px;margin-top:8px}
+.q-save-btn{padding:5px 14px;border-radius:6px;border:none;background:var(--b);
+  color:#fff;font-size:11px;font-weight:600;cursor:pointer;font-family:'Syne',sans-serif}
+.q-save-btn:hover{background:#1d4ed8}
+.q-clear-btn{padding:5px 12px;border-radius:6px;border:1px solid var(--line);background:transparent;
+  color:var(--soft);font-size:11px;cursor:pointer}
+.q-clear-btn:hover{border-color:var(--r);color:var(--r)}
+.q-comment-saved{display:none;background:var(--g2);border-left:3px solid var(--g);
+  border-radius:0 8px 8px 0;padding:8px 12px;margin-bottom:8px;font-size:12px;
+  color:#14532d;line-height:1.55;white-space:pre-wrap;word-break:break-word}
+.q-comment-saved.vis{display:block}
+.q-hint{font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto}
+.sum-badge{display:none;align-items:center;background:var(--b2);color:var(--b);
+  border-radius:5px;padding:1px 7px;font-size:10px;font-weight:600;
+  font-family:'DM Mono',monospace;margin-left:5px}
+
 /* ── PRINT ── */
 @media print{
   .nav{display:none}
@@ -195,7 +227,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="show('overview')">Przegląd</button>
     <button class="nav-tab" onclick="show('benchmarks')">Benchmarki pływalni</button>
-    <button class="nav-tab" onclick="show('questions')">Pytania do Burmistrza</button>
+    <button class="nav-tab" onclick="show('questions')">Pytania do Burmistrza<span class="sum-badge" id="sumbadge"></span></button>
     <button class="nav-tab" onclick="show('risks')">Mapa ryzyk</button>
   </div>
   <button class="nav-print" onclick="window.print()">⎙ Drukuj / PDF</button>
@@ -395,6 +427,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
     </div>
   </div>
   <div class="q-context"><span>Podstawa:</span> Analiza ProPOLIS przyjmuje kredyt 24M bez podania źródła ani oprocentowania. WIBOR 3M według tabeli makro w dok.: 4,1% na lata 2026–2032.</div>
+
+  <div class="q-comment-bar">
+    <button class="q-comment-btn" id="cb1" onclick="toggleComment(1)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
+    <span id="cs1" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
+  </div>
+  <div class="q-comment-area" id="ca1">
+    <div class="q-comment-saved" id="cd1"></div>
+    <textarea class="q-comment-input" id="ci1" placeholder="Komentarz do pytania 1... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
+    <div class="q-comment-actions">
+      <button class="q-save-btn" onclick="saveComment(1)">Zapisz</button>
+      <button class="q-clear-btn" onclick="clearComment(1)">Usuń</button>
+      <span class="q-hint">Ctrl+Enter = zapisz</span>
+    </div>
+  </div>
 </div>
 
 <div class="q">
@@ -406,6 +452,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
     </div>
   </div>
   <div class="q-context"><span>Podstawa:</span> Dobra praktyka finansów samorządowych — kredyt uruchamiany transzami obniża łączny koszt odsetkowy.</div>
+
+  <div class="q-comment-bar">
+    <button class="q-comment-btn" id="cb2" onclick="toggleComment(2)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
+    <span id="cs2" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
+  </div>
+  <div class="q-comment-area" id="ca2">
+    <div class="q-comment-saved" id="cd2"></div>
+    <textarea class="q-comment-input" id="ci2" placeholder="Komentarz do pytania 2... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
+    <div class="q-comment-actions">
+      <button class="q-save-btn" onclick="saveComment(2)">Zapisz</button>
+      <button class="q-clear-btn" onclick="clearComment(2)">Usuń</button>
+      <span class="q-hint">Ctrl+Enter = zapisz</span>
+    </div>
+  </div>
 </div>
 
 <div class="q">
@@ -417,6 +477,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
     </div>
   </div>
   <div class="q-context"><span>Podstawa:</span> Budżet 2026 po zmianie 30.03.2026: IWZ = 6,06%. Kredyt 24M → IWZ ~7,38%. Kredyt 10M Skałów 2027 → IWZ ~8,7–9,2%.</div>
+
+  <div class="q-comment-bar">
+    <button class="q-comment-btn" id="cb3" onclick="toggleComment(3)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
+    <span id="cs3" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
+  </div>
+  <div class="q-comment-area" id="ca3">
+    <div class="q-comment-saved" id="cd3"></div>
+    <textarea class="q-comment-input" id="ci3" placeholder="Komentarz do pytania 3... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
+    <div class="q-comment-actions">
+      <button class="q-save-btn" onclick="saveComment(3)">Zapisz</button>
+      <button class="q-clear-btn" onclick="clearComment(3)">Usuń</button>
+      <span class="q-hint">Ctrl+Enter = zapisz</span>
+    </div>
+  </div>
 </div>
 
 <div class="q">
@@ -428,6 +502,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
     </div>
   </div>
   <div class="q-context"><span>Podstawa:</span> Dług Skałów: §6057 spada z 17,87M do 13,28M — oczekiwana refundacja FEW ~13,28M w 2027–2028.</div>
+
+  <div class="q-comment-bar">
+    <button class="q-comment-btn" id="cb4" onclick="toggleComment(4)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
+    <span id="cs4" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
+  </div>
+  <div class="q-comment-area" id="ca4">
+    <div class="q-comment-saved" id="cd4"></div>
+    <textarea class="q-comment-input" id="ci4" placeholder="Komentarz do pytania 4... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
+    <div class="q-comment-actions">
+      <button class="q-save-btn" onclick="saveComment(4)">Zapisz</button>
+      <button class="q-clear-btn" onclick="clearComment(4)">Usuń</button>
+      <span class="q-hint">Ctrl+Enter = zapisz</span>
+    </div>
+  </div>
 </div>
 
 </div><!-- /sec I -->
@@ -458,6 +546,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
     </div>
   </div>
   <div class="q-context"><span>Podstawa:</span> Tabela 14 analizy ProPOLIS: wpływy basenu 2029 = 6 365 563 zł, z czego "nauka pływania dla uczniów gminy" = 2 188 995 zł (transfer budżetowy). Wynik po konsolidacji: −2 137 100 zł.</div>
+
+  <div class="q-comment-bar">
+    <button class="q-comment-btn" id="cb5" onclick="toggleComment(5)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
+    <span id="cs5" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
+  </div>
+  <div class="q-comment-area" id="ca5">
+    <div class="q-comment-saved" id="cd5"></div>
+    <textarea class="q-comment-input" id="ci5" placeholder="Komentarz do pytania 5... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
+    <div class="q-comment-actions">
+      <button class="q-save-btn" onclick="saveComment(5)">Zapisz</button>
+      <button class="q-clear-btn" onclick="clearComment(5)">Usuń</button>
+      <span class="q-hint">Ctrl+Enter = zapisz</span>
+    </div>
+  </div>
 </div>
 
 <div class="q">
@@ -469,6 +571,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
     </div>
   </div>
   <div class="q-context"><span>Podstawa:</span> BASE: surplus 16,44M, debtService 9,17M. Kredyt 24M: +2,0M raty. Iran −6%: −7,44M PIT/CIT. Wynik: 16,44−7,44 = 8,99M nadwyżki vs 11,17M obsługi długu.</div>
+
+  <div class="q-comment-bar">
+    <button class="q-comment-btn" id="cb6" onclick="toggleComment(6)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
+    <span id="cs6" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
+  </div>
+  <div class="q-comment-area" id="ca6">
+    <div class="q-comment-saved" id="cd6"></div>
+    <textarea class="q-comment-input" id="ci6" placeholder="Komentarz do pytania 6... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
+    <div class="q-comment-actions">
+      <button class="q-save-btn" onclick="saveComment(6)">Zapisz</button>
+      <button class="q-clear-btn" onclick="clearComment(6)">Usuń</button>
+      <span class="q-hint">Ctrl+Enter = zapisz</span>
+    </div>
+  </div>
 </div>
 
 <div class="q">
@@ -480,6 +596,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
     </div>
   </div>
   <div class="q-context"><span>Podstawa:</span> Audyt zewnętrzny, sekcja "wrażliwość na frekwencję": przy −10% wynik basenu = −35 tys. zł; przy −20% = −350 tys. zł (ujęcie operatorskie).</div>
+
+  <div class="q-comment-bar">
+    <button class="q-comment-btn" id="cb7" onclick="toggleComment(7)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
+    <span id="cs7" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
+  </div>
+  <div class="q-comment-area" id="ca7">
+    <div class="q-comment-saved" id="cd7"></div>
+    <textarea class="q-comment-input" id="ci7" placeholder="Komentarz do pytania 7... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
+    <div class="q-comment-actions">
+      <button class="q-save-btn" onclick="saveComment(7)">Zapisz</button>
+      <button class="q-clear-btn" onclick="clearComment(7)">Usuń</button>
+      <span class="q-hint">Ctrl+Enter = zapisz</span>
+    </div>
+  </div>
 </div>
 
 </div><!-- /sec II -->
@@ -505,6 +635,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
     </div>
   </div>
   <div class="q-context"><span>Podstawa:</span> Analiza ProPOLIS Tab. 12 (basen), Tab. 17 (squash), Tab. 22 (sztuki walki) — wszystkie mają §4260 gaz ziemny = 0 zł. Energia elektryczna basenu: 1 284 946 zł w 2029.</div>
+
+  <div class="q-comment-bar">
+    <button class="q-comment-btn" id="cb8" onclick="toggleComment(8)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
+    <span id="cs8" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
+  </div>
+  <div class="q-comment-area" id="ca8">
+    <div class="q-comment-saved" id="cd8"></div>
+    <textarea class="q-comment-input" id="ci8" placeholder="Komentarz do pytania 8... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
+    <div class="q-comment-actions">
+      <button class="q-save-btn" onclick="saveComment(8)">Zapisz</button>
+      <button class="q-clear-btn" onclick="clearComment(8)">Usuń</button>
+      <span class="q-hint">Ctrl+Enter = zapisz</span>
+    </div>
+  </div>
 </div>
 
 <div class="q">
@@ -516,6 +660,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
     </div>
   </div>
   <div class="q-context"><span>Podstawa:</span> Przeszukanie całego dok. ProPOLIS: brak wyników dla "OZE", "fotowolt", "pompa ciepła", "rekuperacja", "energooszczęd". Pływalnia Grunwald Poznań: panele PV na dachu — standard 2024–2026.</div>
+
+  <div class="q-comment-bar">
+    <button class="q-comment-btn" id="cb9" onclick="toggleComment(9)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
+    <span id="cs9" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
+  </div>
+  <div class="q-comment-area" id="ca9">
+    <div class="q-comment-saved" id="cd9"></div>
+    <textarea class="q-comment-input" id="ci9" placeholder="Komentarz do pytania 9... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
+    <div class="q-comment-actions">
+      <button class="q-save-btn" onclick="saveComment(9)">Zapisz</button>
+      <button class="q-clear-btn" onclick="clearComment(9)">Usuń</button>
+      <span class="q-hint">Ctrl+Enter = zapisz</span>
+    </div>
+  </div>
 </div>
 
 <div class="q">
@@ -527,6 +685,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
     </div>
   </div>
   <div class="q-context"><span>Podstawa:</span> Tab. 12 ProPOLIS: §4270 usługi remontowe = 60 000 zł (2029), 80 000 zł (2030–2032). Audyt zewnętrzny: "brak kosztów cyklu życia (LCC) — rezerwy na remonty i odtworzenie technologii". Technologia basenowa wymiana co 10–15 lat.</div>
+
+  <div class="q-comment-bar">
+    <button class="q-comment-btn" id="cb10" onclick="toggleComment(10)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
+    <span id="cs10" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
+  </div>
+  <div class="q-comment-area" id="ca10">
+    <div class="q-comment-saved" id="cd10"></div>
+    <textarea class="q-comment-input" id="ci10" placeholder="Komentarz do pytania 10... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
+    <div class="q-comment-actions">
+      <button class="q-save-btn" onclick="saveComment(10)">Zapisz</button>
+      <button class="q-clear-btn" onclick="clearComment(10)">Usuń</button>
+      <span class="q-hint">Ctrl+Enter = zapisz</span>
+    </div>
+  </div>
 </div>
 
 <div class="q">
@@ -538,6 +710,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
     </div>
   </div>
   <div class="q-context"><span>Podstawa:</span> Tab. 5 ProPOLIS: ceny energii 2029–2032 = 2,0%/rok (CPI). Tab. 12: energia elektryczna basenu 2029 = 1 284 946 zł. Audyt: "samo oparcie indeksacji o CPI nie zamyka ryzyka kosztów energii".</div>
+
+  <div class="q-comment-bar">
+    <button class="q-comment-btn" id="cb11" onclick="toggleComment(11)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
+    <span id="cs11" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
+  </div>
+  <div class="q-comment-area" id="ca11">
+    <div class="q-comment-saved" id="cd11"></div>
+    <textarea class="q-comment-input" id="ci11" placeholder="Komentarz do pytania 11... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
+    <div class="q-comment-actions">
+      <button class="q-save-btn" onclick="saveComment(11)">Zapisz</button>
+      <button class="q-clear-btn" onclick="clearComment(11)">Usuń</button>
+      <span class="q-hint">Ctrl+Enter = zapisz</span>
+    </div>
+  </div>
 </div>
 
 </div><!-- /sec III -->
@@ -568,6 +754,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
     </div>
   </div>
   <div class="q-context"><span>Podstawa:</span> Dok. ProPOLIS: brak jakichkolwiek wymiarów. Etat "koordynatora ds. ochrony obszaru wodnego (ratownik)" przypisany TYLKO do pływalni. Centrum sztuk walki: 1,2 etatu łącznie z kierownikiem i koordynatorem adm.</div>
+
+  <div class="q-comment-bar">
+    <button class="q-comment-btn" id="cb12" onclick="toggleComment(12)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
+    <span id="cs12" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
+  </div>
+  <div class="q-comment-area" id="ca12">
+    <div class="q-comment-saved" id="cd12"></div>
+    <textarea class="q-comment-input" id="ci12" placeholder="Komentarz do pytania 12... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
+    <div class="q-comment-actions">
+      <button class="q-save-btn" onclick="saveComment(12)">Zapisz</button>
+      <button class="q-clear-btn" onclick="clearComment(12)">Usuń</button>
+      <span class="q-hint">Ctrl+Enter = zapisz</span>
+    </div>
+  </div>
 </div>
 
 <div class="q">
@@ -579,6 +779,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
     </div>
   </div>
   <div class="q-context"><span>Podstawa:</span> Tab. 21 ProPOLIS: 3 400 wejść w 2029, 3 200 w 2030–2032. Cena ujednolicona 132 zł/h (2029). Przychody: 357 830 zł. Koszty: 261 761 zł. Wynik: +96 070 zł.</div>
+
+  <div class="q-comment-bar">
+    <button class="q-comment-btn" id="cb13" onclick="toggleComment(13)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
+    <span id="cs13" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
+  </div>
+  <div class="q-comment-area" id="ca13">
+    <div class="q-comment-saved" id="cd13"></div>
+    <textarea class="q-comment-input" id="ci13" placeholder="Komentarz do pytania 13... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
+    <div class="q-comment-actions">
+      <button class="q-save-btn" onclick="saveComment(13)">Zapisz</button>
+      <button class="q-clear-btn" onclick="clearComment(13)">Usuń</button>
+      <span class="q-hint">Ctrl+Enter = zapisz</span>
+    </div>
+  </div>
 </div>
 
 <div class="q">
@@ -590,6 +804,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
     </div>
   </div>
   <div class="q-context"><span>Podstawa:</span> Tab. 16 ProPOLIS: 6 000 wejść 2029. Tab. 15: cena ujednolicona 75 zł (2029). Tab. 19: przychody squash 359 584 zł, wynik +108 775 zł. Tendencja: wynik spada z +108K do +56K w 2032.</div>
+
+  <div class="q-comment-bar">
+    <button class="q-comment-btn" id="cb14" onclick="toggleComment(14)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
+    <span id="cs14" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
+  </div>
+  <div class="q-comment-area" id="ca14">
+    <div class="q-comment-saved" id="cd14"></div>
+    <textarea class="q-comment-input" id="ci14" placeholder="Komentarz do pytania 14... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
+    <div class="q-comment-actions">
+      <button class="q-save-btn" onclick="saveComment(14)">Zapisz</button>
+      <button class="q-clear-btn" onclick="clearComment(14)">Usuń</button>
+      <span class="q-hint">Ctrl+Enter = zapisz</span>
+    </div>
+  </div>
 </div>
 
 </div><!-- /sec IV -->
@@ -615,6 +843,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
     </div>
   </div>
   <div class="q-context"><span>Podstawa:</span> Audyt zewnętrzny, punkt C10: "limit 6 mln zł na inwestycję nie wynika jednoznacznie z przytoczonych publicznych materiałów; brak wskazania dokumentu". Analiza ProPOLIS str. 24: "Program Ochrony Ludności i Obrony Cywilnej — ok. 6 000 000 zł".</div>
+
+  <div class="q-comment-bar">
+    <button class="q-comment-btn" id="cb15" onclick="toggleComment(15)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
+    <span id="cs15" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
+  </div>
+  <div class="q-comment-area" id="ca15">
+    <div class="q-comment-saved" id="cd15"></div>
+    <textarea class="q-comment-input" id="ci15" placeholder="Komentarz do pytania 15... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
+    <div class="q-comment-actions">
+      <button class="q-save-btn" onclick="saveComment(15)">Zapisz</button>
+      <button class="q-clear-btn" onclick="clearComment(15)">Usuń</button>
+      <span class="q-hint">Ctrl+Enter = zapisz</span>
+    </div>
+  </div>
 </div>
 
 <div class="q">
@@ -626,6 +868,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
     </div>
   </div>
   <div class="q-context"><span>Podstawa:</span> Audyt zewnętrzny, punkt C11: "kwalifikowalność projektów typu pływalnia zależy od spełnienia kryteriów (ochrona ludności/dual use) — rekomendowane wstępne konsultacje". Analiza ProPOLIS str. 24: FBiO jako źródło bez podania warunków.</div>
+
+  <div class="q-comment-bar">
+    <button class="q-comment-btn" id="cb16" onclick="toggleComment(16)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
+    <span id="cs16" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
+  </div>
+  <div class="q-comment-area" id="ca16">
+    <div class="q-comment-saved" id="cd16"></div>
+    <textarea class="q-comment-input" id="ci16" placeholder="Komentarz do pytania 16... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
+    <div class="q-comment-actions">
+      <button class="q-save-btn" onclick="saveComment(16)">Zapisz</button>
+      <button class="q-clear-btn" onclick="clearComment(16)">Usuń</button>
+      <span class="q-hint">Ctrl+Enter = zapisz</span>
+    </div>
+  </div>
 </div>
 
 </div><!-- /sec V -->
@@ -663,6 +919,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
     </div>
   </div>
   <div class="q-context"><span>Podstawa:</span> Art. 83 ustawy z 5.12.2024 r. o OL i OC: MDS = obiekt budowlany przystosowany do tymczasowego ukrycia. Rozp. MSWiA 21.02.2025: kryteria uznawania za budowlę ochronną. Dotacja do 100% kosztów funkcji ochronnej (art. 106 ustawy).</div>
+
+  <div class="q-comment-bar">
+    <button class="q-comment-btn" id="cb17" onclick="toggleComment(17)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
+    <span id="cs17" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
+  </div>
+  <div class="q-comment-area" id="ca17">
+    <div class="q-comment-saved" id="cd17"></div>
+    <textarea class="q-comment-input" id="ci17" placeholder="Komentarz do pytania 17... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
+    <div class="q-comment-actions">
+      <button class="q-save-btn" onclick="saveComment(17)">Zapisz</button>
+      <button class="q-clear-btn" onclick="clearComment(17)">Usuń</button>
+      <span class="q-hint">Ctrl+Enter = zapisz</span>
+    </div>
+  </div>
 </div>
 
 <div class="q">
@@ -674,6 +944,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
     </div>
   </div>
   <div class="q-context"><span>Podstawa:</span> Wytyczne Szefa OC Kraju 2018: odległość do 150 m. Ukraina 2022–2024: doświadczenie — schrony przy przystankach autobusowych w Charkowie, bo ludzie nie zdążają dojść dalej. Polska ustawa: MDS jako adaptacja "garaży podziemnych, pomieszczeń budynków" do funkcji ochronnej.</div>
+
+  <div class="q-comment-bar">
+    <button class="q-comment-btn" id="cb18" onclick="toggleComment(18)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
+    <span id="cs18" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
+  </div>
+  <div class="q-comment-area" id="ca18">
+    <div class="q-comment-saved" id="cd18"></div>
+    <textarea class="q-comment-input" id="ci18" placeholder="Komentarz do pytania 18... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
+    <div class="q-comment-actions">
+      <button class="q-save-btn" onclick="saveComment(18)">Zapisz</button>
+      <button class="q-clear-btn" onclick="clearComment(18)">Usuń</button>
+      <span class="q-hint">Ctrl+Enter = zapisz</span>
+    </div>
+  </div>
 </div>
 
 <div class="q">
@@ -685,6 +969,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
     </div>
   </div>
   <div class="q-context"><span>Podstawa:</span> Ukraina 2022–2026: główna przyczyna bezużyteczności schronów = brak autonomii energetycznej. Polska norma schronowa (Szef OC 2018): trzy okresy wentylacji — normalny, filtrowentylacja, pełna izolacja. Ustawa OL i OC art. 83: wymóg "rozwiązań służących przetrwaniu osób".</span></div>
+
+  <div class="q-comment-bar">
+    <button class="q-comment-btn" id="cb19" onclick="toggleComment(19)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
+    <span id="cs19" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
+  </div>
+  <div class="q-comment-area" id="ca19">
+    <div class="q-comment-saved" id="cd19"></div>
+    <textarea class="q-comment-input" id="ci19" placeholder="Komentarz do pytania 19... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
+    <div class="q-comment-actions">
+      <button class="q-save-btn" onclick="saveComment(19)">Zapisz</button>
+      <button class="q-clear-btn" onclick="clearComment(19)">Usuń</button>
+      <span class="q-hint">Ctrl+Enter = zapisz</span>
+    </div>
+  </div>
 </div>
 
 <div class="q">
@@ -696,6 +994,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
     </div>
   </div>
   <div class="q-context"><span>Podstawa:</span> Rozp. MSWiA 21.02.2025: U-1 = ukrycie z funkcjami ochronnymi §2 ust. 2 pkt 1–3. Ukraina: "nawet proste ukrycia o małym stopniu osłonności zabezpieczające przed odłamkami mogą ochronić życie" (Przegląd Pożarniczy KGPSP). Producent schronów Hobbit House (certyfikat NATO): ściany min. 300 mm betonu zbrojonego = 500 kPa odporności.</div>
+
+  <div class="q-comment-bar">
+    <button class="q-comment-btn" id="cb20" onclick="toggleComment(20)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
+    <span id="cs20" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
+  </div>
+  <div class="q-comment-area" id="ca20">
+    <div class="q-comment-saved" id="cd20"></div>
+    <textarea class="q-comment-input" id="ci20" placeholder="Komentarz do pytania 20... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
+    <div class="q-comment-actions">
+      <button class="q-save-btn" onclick="saveComment(20)">Zapisz</button>
+      <button class="q-clear-btn" onclick="clearComment(20)">Usuń</button>
+      <span class="q-hint">Ctrl+Enter = zapisz</span>
+    </div>
+  </div>
 </div>
 
 <div class="q">
@@ -707,6 +1019,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
     </div>
   </div>
   <div class="q-context"><span>Podstawa:</span> Ustawa OL i OC art. 106: dotacja do 100% kosztów funkcji ochronnej. OLiOC nabór 2025–2026: "obiekty zbiorowej ochrony". FBiO: dual use = sport + ochrona ludności. Poseł Strach: "Nowe schrony powinny powstawać pod szkołami, stadionami, teatrami".</div>
+
+  <div class="q-comment-bar">
+    <button class="q-comment-btn" id="cb21" onclick="toggleComment(21)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
+    <span id="cs21" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
+  </div>
+  <div class="q-comment-area" id="ca21">
+    <div class="q-comment-saved" id="cd21"></div>
+    <textarea class="q-comment-input" id="ci21" placeholder="Komentarz do pytania 21... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
+    <div class="q-comment-actions">
+      <button class="q-save-btn" onclick="saveComment(21)">Zapisz</button>
+      <button class="q-clear-btn" onclick="clearComment(21)">Usuń</button>
+      <span class="q-hint">Ctrl+Enter = zapisz</span>
+    </div>
+  </div>
 </div>
 
 <div class="q">
@@ -718,6 +1044,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
     </div>
   </div>
   <div class="q-context"><span>Podstawa:</span> Polska norma schronowa: "zalecana odległość do budowli ochronnej nie więcej niż 150 m od miejsca stałego przebywania". Ustawa OL i OC: burmistrz odpowiada za "planowanie zbiorowej ochrony ludności". Ukraina 2022: doświadczenie — brak oznakowania = ludzie szukają schronu 5–7 minut zamiast 2 minut.</div>
+
+  <div class="q-comment-bar">
+    <button class="q-comment-btn" id="cb22" onclick="toggleComment(22)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
+    <span id="cs22" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
+  </div>
+  <div class="q-comment-area" id="ca22">
+    <div class="q-comment-saved" id="cd22"></div>
+    <textarea class="q-comment-input" id="ci22" placeholder="Komentarz do pytania 22... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
+    <div class="q-comment-actions">
+      <button class="q-save-btn" onclick="saveComment(22)">Zapisz</button>
+      <button class="q-clear-btn" onclick="clearComment(22)">Usuń</button>
+      <span class="q-hint">Ctrl+Enter = zapisz</span>
+    </div>
+  </div>
 </div>
 
 </div><!-- /sec VI -->
@@ -899,6 +1239,77 @@ new Chart(document.getElementById('cMatrix'), {
     }
   }
 });
+
+var CK = 'mcs_q_comments_v1';
+function loadC(){ try{return JSON.parse(localStorage.getItem(CK)||'{}')}catch(e){return {}} }
+function saveC(o){ try{localStorage.setItem(CK,JSON.stringify(o))}catch(e){} }
+
+function toggleComment(n){
+  var a=document.getElementById('ca'+n);
+  var open=a.classList.contains('open');
+  a.classList.toggle('open',!open);
+  if(!open){ var ci=document.getElementById('ci'+n); var c=loadC(); if(c[n])ci.value=c[n]; ci.focus(); }
+}
+
+function saveComment(n){
+  var v=document.getElementById('ci'+n).value.trim();
+  var c=loadC();
+  if(v){c[n]=v;}else{delete c[n];}
+  saveC(c); renderQ(n);
+  document.getElementById('ca'+n).classList.remove('open');
+}
+
+function clearComment(n){
+  document.getElementById('ci'+n).value='';
+  var c=loadC(); delete c[n]; saveC(c); renderQ(n);
+  document.getElementById('ca'+n).classList.remove('open');
+}
+
+function renderQ(n){
+  var c=loadC(); var txt=c[n]||'';
+  var btn=document.getElementById('cb'+n);
+  var cd=document.getElementById('cd'+n);
+  var cs=document.getElementById('cs'+n);
+  if(!btn)return;
+  var iconAdd='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>';
+  var iconOk='<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>';
+  if(txt){
+    btn.classList.add('has-comment');
+    btn.innerHTML=iconOk+' Komentarz zapisany';
+    cd.textContent=txt; cd.classList.add('vis');
+    cs.textContent='zapisano '+new Date().toLocaleDateString('pl-PL');
+  } else {
+    btn.classList.remove('has-comment');
+    btn.innerHTML=iconAdd+' Dodaj komentarz';
+    cd.classList.remove('vis'); cs.textContent='';
+  }
+  updateBadge();
+}
+
+function updateBadge(){
+  var c=loadC(); var n=Object.keys(c).length;
+  var b=document.getElementById('sumbadge');
+  if(!b)return;
+  if(n>0){b.textContent=n+' kom.';b.style.display='inline-flex';}
+  else{b.style.display='none';}
+}
+
+function initComments(){
+  for(var i=1;i<=22;i++) renderQ(i);
+  updateBadge();
+}
+
+document.addEventListener('keydown',function(e){
+  if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){
+    var a=document.activeElement;
+    if(a&&a.classList.contains('q-comment-input')){
+      saveComment(parseInt(a.id.replace('ci','')));
+    }
+  }
+});
+
+window.addEventListener('load', initComments);
+
 </script>
 </body>
 </html>
