@@ -3,1119 +3,770 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MCS Kostrzyn — Komisja Budżetu · Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Budżet Gminy Kostrzyn · Sesja Rady Miejskiej · 27 kwietnia 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#f0f2f7;--white:#fff;--ink:#0d1117;--soft:#4a5568;--dim:#8896a8;--line:#e2e8f0;
-  --r:#dc2626;--r2:#fee2e2;--y:#d97706;--y2:#fef3c7;--b:#2563eb;--b2:#dbeafe;
-  --g:#16a34a;--g2:#dcfce7;--p:#7c3aed;--p2:#ede9fe;--o:#ea580c;--o2:#ffedd5;
+:root {
+  --cream: #f7f4ef;
+  --warm: #ede8e0;
+  --paper: #faf8f5;
+  --ink: #1a1814;
+  --ink2: #3d3a35;
+  --ink3: #7a7570;
+  --red: #c0392b;
+  --red-light: #fdf0ee;
+  --green: #2e7d52;
+  --green-light: #edf7f1;
+  --amber: #b35c00;
+  --amber-light: #fef8ee;
+  --blue: #1e4d8c;
+  --blue-light: #eef4fd;
+  --line: #ddd8d0;
+  --serif: 'Fraunces', Georgia, serif;
+  --sans: 'DM Sans', system-ui, sans-serif;
+  --mono: 'DM Mono', 'Courier New', monospace;
 }
-html{scroll-behavior:smooth}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
 
-/* ── NAV ── */
-.nav{background:#0d1117;border-bottom:1px solid #1e2530;position:sticky;top:0;z-index:100;
-  display:flex;align-items:center;gap:0;padding:0 24px;height:52px}
-.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#fff;
-  margin-right:28px;white-space:nowrap}
-.nav-logo span{color:#60a5fa}
-.nav-tabs{display:flex;gap:2px;flex:1;overflow-x:auto}
-.nav-tab{padding:6px 16px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;
-  color:rgba(255,255,255,.45);border:none;background:transparent;white-space:nowrap;
-  font-family:'Syne',sans-serif;transition:all .15s}
-.nav-tab.active{background:rgba(255,255,255,.1);color:#fff}
-.nav-tab:hover:not(.active){color:rgba(255,255,255,.7)}
-.nav-print{margin-left:auto;padding:5px 14px;border-radius:6px;font-size:11px;
-  font-family:'DM Mono',monospace;border:1px solid rgba(255,255,255,.15);
-  color:rgba(255,255,255,.5);background:transparent;cursor:pointer;white-space:nowrap;transition:all .15s}
-.nav-print:hover{background:rgba(255,255,255,.08);color:#fff}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── VIEWS ── */
-.view{display:none}
-.view.active{display:block}
+body {
+  font-family: var(--sans);
+  background: var(--cream);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.6;
+}
 
-/* ── COVER (shared header) ── */
-.cover{background:#0d1117;color:#fff;padding:48px 48px 40px;position:relative;overflow:hidden}
-.cover::before{content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 70% 60% at 85% 30%,rgba(37,99,235,.18) 0%,transparent 65%),
-             radial-gradient(ellipse 40% 70% at 5% 85%,rgba(220,38,38,.1) 0%,transparent 60%)}
-.cover-inner{position:relative;max-width:1100px;margin:0 auto}
-.cover-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(220,38,38,.18);
-  border:1px solid rgba(220,38,38,.3);color:#fca5a5;border-radius:6px;
-  padding:4px 12px;font-size:10px;font-weight:600;font-family:'DM Mono',monospace;
-  letter-spacing:.06em;text-transform:uppercase;margin-bottom:16px}
-.cover-badge::before{content:'●';animation:pulse 1.5s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.cover h1{font-family:'Syne',sans-serif;font-size:clamp(24px,3vw,38px);
-  font-weight:800;line-height:1.1;margin-bottom:8px}
-.cover h1 span{color:#60a5fa}
-.cover-sub{font-size:12px;color:rgba(255,255,255,.4);font-family:'DM Mono',monospace;margin-bottom:28px}
-.cover-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px}
-.ckpi{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);
-  border-radius:10px;padding:14px 16px}
-.ckpi-lbl{font-size:10px;color:rgba(255,255,255,.38);text-transform:uppercase;
-  letter-spacing:.07em;margin-bottom:6px;font-family:'DM Mono',monospace}
-.ckpi-val{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;line-height:1;margin-bottom:3px}
-.ckpi-sub{font-size:10px;font-family:'DM Mono',monospace}
-.red{color:#f87171}.grn{color:#4ade80}.warn{color:#fbbf24}
+/* NAV */
+.nav {
+  background: var(--ink);
+  display: flex;
+  align-items: center;
+  padding: 0 2rem;
+  height: 52px;
+  gap: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nav-logo {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 15px;
+  color: #f7f4ef;
+  margin-right: 2rem;
+  white-space: nowrap;
+  letter-spacing: .02em;
+}
+.nav-logo em { font-style: italic; color: #c8bfb0; }
+.nav-tabs { display: flex; gap: 2px; overflow-x: auto; flex: 1; }
+.tab {
+  padding: 5px 16px;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(247,244,239,.45);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  white-space: nowrap;
+  transition: all .15s;
+}
+.tab:hover { color: rgba(247,244,239,.75); }
+.tab.active { background: rgba(247,244,239,.12); color: #f7f4ef; }
+.nav-meta {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: rgba(247,244,239,.3);
+  white-space: nowrap;
+  margin-left: auto;
+}
 
-/* ── LAYOUT ── */
-.main{max-width:1100px;margin:0 auto;padding:36px 24px 80px}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px}
-.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
-@media(max-width:700px){.g2,.g3,.g4{grid-template-columns:1fr}}
+/* VIEWS */
+.view { display: none; }
+.view.active { display: block; }
 
-/* ── CARDS ── */
-.card{background:var(--white);border-radius:14px;border:1px solid var(--line);
-  padding:22px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
-.card-title{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;
-  color:var(--soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px}
-.metric{background:#f8fafc;border-radius:9px;padding:13px 15px;border:0.5px solid var(--line)}
-.m-lbl{font-size:11px;color:var(--soft);margin-bottom:5px}
-.m-val{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;line-height:1}
-.m-sub{font-size:11px;color:var(--soft);margin-top:3px;font-family:'DM Mono',monospace}
-.m-val.r{color:var(--r)}.m-val.g{color:var(--g)}.m-val.y{color:var(--y)}.m-val.b{color:var(--b)}
+/* HERO */
+.hero {
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+  padding: 3rem 2rem 2.5rem;
+}
+.hero-inner { max-width: 1080px; margin: 0 auto; }
+.hero-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: .75rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hero-tag::before {
+  content: '';
+  display: inline-block;
+  width: 18px;
+  height: 1px;
+  background: var(--ink3);
+}
+.hero h1 {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.1;
+  color: var(--ink);
+  margin-bottom: .5rem;
+}
+.hero h1 em { font-style: italic; color: var(--red); }
+.hero-sub {
+  font-size: 13px;
+  color: var(--ink3);
+  font-family: var(--mono);
+  margin-bottom: 2rem;
+}
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+.kpi {
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.kpi.red-bg { background: var(--red-light); border-color: #f0c4be; }
+.kpi.green-bg { background: var(--green-light); border-color: #c0dfcf; }
+.kpi.amber-bg { background: var(--amber-light); border-color: #f0d9b5; }
+.kpi.blue-bg { background: var(--blue-light); border-color: #c0d4f0; }
+.kpi-lbl {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink3);
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  margin-bottom: 6px;
+}
+.kpi-val {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.kpi-val.red { color: var(--red); }
+.kpi-val.green { color: var(--green); }
+.kpi-val.amber { color: var(--amber); }
+.kpi-val.blue { color: var(--blue); }
+.kpi-note { font-size: 11px; color: var(--ink3); }
 
-/* ── SECTION HEADER ── */
-.sh{display:flex;align-items:center;gap:10px;margin-bottom:18px;margin-top:40px;
-  padding-bottom:10px;border-bottom:2px solid var(--line)}
-.sh:first-child{margin-top:0}
-.sh-num{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;
-  justify-content:center;font-family:'Syne',sans-serif;font-size:12px;font-weight:800;flex-shrink:0}
-.sh-num.b{background:var(--b2);color:var(--b)}.sh-num.r{background:var(--r2);color:var(--r)}
-.sh-num.y{background:var(--y2);color:var(--y)}.sh-num.g{background:var(--g2);color:var(--g)}
-.sh-num.p{background:var(--p2);color:var(--p)}.sh-num.o{background:var(--o2);color:var(--o)}
-.sh-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:800}
-.sh-sub{font-size:12px;color:var(--soft);margin-top:2px}
+/* MAIN LAYOUT */
+.main { max-width: 1080px; margin: 0 auto; padding: 2rem; }
 
-/* ── TABLE ── */
-.tbl{width:100%;border-collapse:collapse;font-size:12px}
-.tbl th{padding:8px 11px;text-align:left;font-family:'DM Mono',monospace;font-size:10px;
-  font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);
-  border-bottom:2px solid var(--line);background:#fafbfc}
-.tbl td{padding:10px 11px;border-bottom:1px solid var(--line);vertical-align:middle}
-.tbl tr:last-child td{border-bottom:none}
-.tbl tr:hover td{background:#fafbfc}
-.num{font-family:'DM Mono',monospace;font-weight:500}
-.dn{color:var(--r);font-weight:600;font-family:'DM Mono',monospace}
-.dp{color:var(--g);font-weight:600;font-family:'DM Mono',monospace}
-.hl-r td{background:#fff5f5!important}.hl-y td{background:#fffbeb!important}
-.hl-b td{background:#eff6ff!important}
+/* SECTION */
+.section-hdr {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 1.25rem;
+  margin-top: 2.5rem;
+  padding-bottom: .75rem;
+  border-bottom: 1px solid var(--line);
+}
+.section-hdr:first-child { margin-top: 0; }
+.section-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink3);
+}
+.section-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 1.25rem;
+  color: var(--ink);
+}
+.section-sub { font-size: 12px; color: var(--ink3); margin-left: auto; font-family: var(--mono); }
 
-/* ── BADGE ── */
-.badge{display:inline-block;font-size:10px;padding:3px 8px;border-radius:6px;font-weight:600;font-family:'DM Mono',monospace}
-.ok{background:var(--g2);color:var(--g)}.warn{background:var(--y2);color:var(--y)}
-.danger{background:var(--r2);color:var(--r)}.info{background:var(--b2);color:var(--b)}
-.gray{background:#f3f4f6;color:var(--soft);border:0.5px solid var(--line)}
+/* GRID */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+@media(max-width:680px) { .g2, .g3 { grid-template-columns: 1fr; } }
 
-/* ── Q CARDS ── */
-.q{background:var(--white);border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden}
-.q-head{display:flex;align-items:flex-start;gap:12px;padding:16px 18px 12px}
-.q-num{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;
-  justify-content:center;font-family:'Syne',sans-serif;font-size:12px;font-weight:800;
-  flex-shrink:0;margin-top:1px}
-.q-num.r{background:var(--r);color:#fff}.q-num.y{background:var(--y);color:#fff}
-.q-num.b{background:var(--b);color:#fff}.q-num.g{background:var(--g);color:#fff}
-.q-num.p{background:var(--p);color:#fff}.q-num.o{background:var(--o);color:#fff}
-.q-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;margin-bottom:4px;line-height:1.3}
-.q-text{font-size:12px;color:var(--soft);line-height:1.6}
-.q-context{background:#fafbfc;border-top:1px solid var(--line);
-  padding:10px 18px 10px 58px;font-size:11px;color:var(--dim);line-height:1.5;
-  font-family:'DM Mono',monospace}
-.q-context span{color:var(--soft)}
+/* CARD */
+.card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+.card-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--ink3);
+  margin-bottom: 1rem;
+}
+.card.accent-red { border-left: 3px solid var(--red); border-radius: 0 12px 12px 0; }
+.card.accent-green { border-left: 3px solid var(--green); border-radius: 0 12px 12px 0; }
+.card.accent-amber { border-left: 3px solid var(--amber); border-radius: 0 12px 12px 0; }
 
-/* ── ALERT ── */
-.alert{border-radius:9px;padding:12px 15px;margin-bottom:12px;font-size:12px;
-  line-height:1.6;border-left:3px solid;display:flex;gap:10px;align-items:flex-start}
-.alert.r{background:var(--r2);border-color:var(--r);color:#7f1d1d}
-.alert.y{background:var(--y2);border-color:var(--y);color:#78350f}
-.alert.g{background:var(--g2);border-color:var(--g);color:#14532d}
-.alert.b{background:var(--b2);border-color:var(--b);color:#1e3a8a}
-.alert-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+/* TABLE */
+.tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+.tbl th {
+  padding: 7px 10px;
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink3);
+  border-bottom: 1px solid var(--line);
+  background: var(--cream);
+  font-weight: 400;
+  white-space: nowrap;
+}
+.tbl th:not(:first-child) { text-align: right; }
+.tbl td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+  color: var(--ink);
+}
+.tbl td:not(:first-child) {
+  text-align: right;
+  font-family: var(--mono);
+  font-size: 11px;
+}
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: var(--cream); }
+.tbl tr.hl-red td { background: #fdf4f3; }
+.tbl tr.hl-amber td { background: #fef8f0; }
+.tbl tr.hl-green td { background: #f2faf5; }
+.num-red { color: var(--red); font-weight: 500; }
+.num-green { color: var(--green); font-weight: 500; }
+.num-amber { color: var(--amber); font-weight: 500; }
 
-/* ── RISK GRID ── */
-.risk-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px}
-.rk{border-radius:11px;padding:15px 17px;border-left:4px solid}
-.rk.h{background:var(--r2);border-color:var(--r)}.rk.m{background:var(--y2);border-color:var(--y)}
-.rk.l{background:var(--g2);border-color:var(--g)}.rk.s{background:var(--p2);border-color:var(--p)}
-.rk-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;
-  font-family:'DM Mono',monospace;opacity:.6;margin-bottom:6px}
-.rk-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;margin-bottom:4px}
-.rk-desc{font-size:11px;line-height:1.5;color:var(--soft)}
-.rk-val{font-family:'DM Mono',monospace;font-size:14px;font-weight:700;margin-top:6px}
+/* BADGE */
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+.b-red { background: var(--red-light); color: var(--red); border: 1px solid #f0c4be; }
+.b-green { background: var(--green-light); color: var(--green); border: 1px solid #c0dfcf; }
+.b-amber { background: var(--amber-light); color: var(--amber); border: 1px solid #f0d9b5; }
+.b-blue { background: var(--blue-light); color: var(--blue); border: 1px solid #c0d4f0; }
+.b-gray { background: var(--warm); color: var(--ink3); border: 1px solid var(--line); }
 
-/* ── CHART ── */
-.ch{position:relative;height:240px;margin-bottom:0}
-.ch.tall{height:300px}
+/* ALERT */
+.alert {
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.alert.red { background: var(--red-light); border: 1px solid #f0c4be; color: #7a1a10; }
+.alert.amber { background: var(--amber-light); border: 1px solid #f0d9b5; color: #7a3d00; }
+.alert.green { background: var(--green-light); border: 1px solid #c0dfcf; color: #1a5234; }
+.alert-ico { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
 
-/* ── SEC (questions reuse) ── */
-.sec{margin-bottom:30px}
-.sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:16px;margin-top:36px;
-  padding-bottom:10px;border-bottom:2px solid var(--line)}
-.sec-hdr:first-child{margin-top:0}
-.sec-icon{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;
-  justify-content:center;font-family:'Syne',sans-serif;font-size:12px;font-weight:800;flex-shrink:0}
-.sec-icon.r{background:var(--r2);color:var(--r)}.sec-icon.y{background:var(--y2);color:var(--y)}
-.sec-icon.b{background:var(--b2);color:var(--b)}.sec-icon.g{background:var(--g2);color:var(--g)}
-.sec-icon.p{background:var(--p2);color:var(--p)}.sec-icon.o{background:var(--o2);color:var(--o)}
-.sec-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800}
-.sec-sub{font-size:11px;color:var(--soft);margin-top:2px}
-.q-list{display:flex;flex-direction:column;gap:10px}
+/* CHART WRAPPER */
+.ch { position: relative; }
 
-/* ── BAR INLINE ── */
-.bar-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:0.5px solid var(--line)}
-.bar-row:last-child{border-bottom:none}
-.bar-name{font-size:12px;width:140px;flex-shrink:0}
-.bar-name.highlight{font-weight:700;color:var(--b)}
-.bar-track{flex:1;height:8px;background:#e8ecf2;border-radius:99px;overflow:hidden}
-.bar-fill{height:100%;border-radius:99px}
-.bar-val{font-family:'DM Mono',monospace;font-size:11px;width:55px;text-align:right;flex-shrink:0}
-.bar-val.highlight{font-weight:700;color:var(--b)}
+/* WATERFALL BAR */
+.wf { display: flex; flex-direction: column; gap: 6px; }
+.wf-row { display: flex; align-items: center; gap: 10px; }
+.wf-lbl { font-size: 11px; color: var(--ink2); width: 160px; flex-shrink: 0; font-family: var(--sans); }
+.wf-bar-wrap { flex: 1; position: relative; height: 20px; }
+.wf-bar { height: 20px; border-radius: 3px; display: flex; align-items: center; padding: 0 6px; font-family: var(--mono); font-size: 10px; font-weight: 500; white-space: nowrap; }
+.wf-val { font-family: var(--mono); font-size: 11px; width: 80px; text-align: right; }
 
+/* QUOTE */
+.quote {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--ink2);
+  border-left: 3px solid var(--red);
+  padding: .75rem 1rem;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+.quote-src { font-family: var(--mono); font-size: 10px; color: var(--ink3); font-style: normal; margin-top: .5rem; display: block; }
 
-.q-comment-bar{border-top:1px solid var(--line);padding:8px 16px 8px 58px;
-  display:flex;align-items:center;gap:8px}
-.q-comment-btn{font-size:11px;color:var(--dim);background:none;border:none;
-  cursor:pointer;font-family:'DM Mono',monospace;padding:3px 8px;border-radius:5px;
-  transition:all .15s;display:inline-flex;align-items:center;gap:5px}
-.q-comment-btn:hover{background:var(--b2);color:var(--b)}
-.q-comment-btn.has-comment{color:var(--g);font-weight:500}
-.q-comment-area{display:none;border-top:1px solid var(--line);
-  padding:10px 16px 12px 58px;background:#fafbfc}
-.q-comment-area.open{display:block}
-.q-comment-input{width:100%;border:1px solid var(--line);border-radius:8px;
-  padding:8px 12px;font-size:12px;font-family:'DM Sans',sans-serif;
-  color:var(--ink);background:var(--white);resize:none;min-height:64px;
-  line-height:1.5;transition:border-color .15s;outline:none}
-.q-comment-input:focus{border-color:var(--b)}
-.q-comment-actions{display:flex;align-items:center;gap:8px;margin-top:8px}
-.q-save-btn{padding:5px 14px;border-radius:6px;border:none;background:var(--b);
-  color:#fff;font-size:11px;font-weight:600;cursor:pointer;font-family:'Syne',sans-serif}
-.q-save-btn:hover{background:#1d4ed8}
-.q-clear-btn{padding:5px 12px;border-radius:6px;border:1px solid var(--line);background:transparent;
-  color:var(--soft);font-size:11px;cursor:pointer}
-.q-clear-btn:hover{border-color:var(--r);color:var(--r)}
-.q-comment-saved{display:none;background:var(--g2);border-left:3px solid var(--g);
-  border-radius:0 8px 8px 0;padding:8px 12px;margin-bottom:8px;font-size:12px;
-  color:#14532d;line-height:1.55;white-space:pre-wrap;word-break:break-word}
-.q-comment-saved.vis{display:block}
-.q-hint{font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto}
-.sum-badge{display:none;align-items:center;background:var(--b2);color:var(--b);
-  border-radius:5px;padding:1px 7px;font-size:10px;font-weight:600;
-  font-family:'DM Mono',monospace;margin-left:5px}
-
-/* ── PRINT ── */
-@media print{
-  .nav{display:none}
-  .view{display:block!important}
-  .view-divider{page-break-before:always}
-  body{background:white}
-  .cover{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .card,.q,.rk{break-inside:avoid}
+/* PRINT */
+@media print {
+  .nav { display: none; }
+  .view { display: block !important; page-break-before: always; }
+  body { background: white; }
+  .hero { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
 </style>
 </head>
 <body>
 
 <!-- NAV -->
-<div class="nav">
-  <div class="nav-logo">MCS<span>Kostrzyn</span></div>
+<nav class="nav">
+  <div class="nav-logo">Gmina <em>Kostrzyn</em></div>
   <div class="nav-tabs">
-    <button class="nav-tab active" onclick="show('overview')">Przegląd</button>
-    <button class="nav-tab" onclick="show('benchmarks')">Benchmarki pływalni</button>
-    <button class="nav-tab" onclick="show('questions')">Pytania do Burmistrza<span class="sum-badge" id="sumbadge"></span></button>
-    <button class="nav-tab" onclick="show('risks')">Mapa ryzyk</button>
+    <button class="tab active" onclick="show('budzet',this)">Budżet 2026</button>
+    <button class="tab" onclick="show('wpf',this)">WPF 2026–2042</button>
+    <button class="tab" onclick="show('basen',this)">Kredyt na basen</button>
+    <button class="tab" onclick="show('stanowisko',this)">Stanowisko radnego</button>
   </div>
-  <button class="nav-print" onclick="window.print()">⎙ Drukuj / PDF</button>
-</div>
+  <div class="nav-meta">Sesja XXVII · 27.04.2026</div>
+</nav>
 
-<!-- ══════════════════════════════════════════════
-     VIEW 1 — OVERVIEW
-══════════════════════════════════════════════ -->
-<div id="view-overview" class="view active">
+<!-- ═══════════════════════════════════════════
+     WIDOK 1 — BUDŻET 2026
+════════════════════════════════════════════ -->
+<div id="v-budzet" class="view active">
 
-<div class="cover">
-<div class="cover-inner">
-  <div class="cover-badge">Komisja Budżetu · Basen MCS Kostrzyn</div>
-  <h1>Dashboard analizy<br><span>inwestycji sportowej</span></h1>
-  <div class="cover-sub">Analiza ProPOLIS 30.03.2026 · Audyt zewnętrzny · Benchmarki 8 gmin · 22 pytania do Burmistrza</div>
-  <div class="cover-kpis">
-    <div class="ckpi"><div class="ckpi-lbl">Wartość inwestycji</div><div class="ckpi-val">~50M zł</div><div class="ckpi-sub warn">szacunek CAPEX</div></div>
-    <div class="ckpi"><div class="ckpi-lbl">Dotacja (plan)</div><div class="ckpi-val grn">26M zł</div><div class="ckpi-sub grn">w dochodach majątkowych</div></div>
-    <div class="ckpi"><div class="ckpi-lbl">Kredyt gminy</div><div class="ckpi-val warn">24M zł</div><div class="ckpi-sub warn">15 lat · 3%</div></div>
-    <div class="ckpi"><div class="ckpi-lbl">Rata roczna</div><div class="ckpi-val warn">2,00M zł</div><div class="ckpi-sub warn">166 tys. zł/mies.</div></div>
-    <div class="ckpi"><div class="ckpi-lbl">Dopłata operacyjna/rok</div><div class="ckpi-val red">~2,14M zł</div><div class="ckpi-sub red">od 2029 (wg audytu)</div></div>
-    <div class="ckpi"><div class="ckpi-lbl">Wolna nadwyżka po obu</div><div class="ckpi-val red">1,13M zł</div><div class="ckpi-sub red">bufor minimalny ⚠</div></div>
-    <div class="ckpi"><div class="ckpi-lbl">Plan frekwencji ProPOLIS</div><div class="ckpi-val warn">147 000</div><div class="ckpi-sub warn">wejść / rok 2029</div></div>
-    <div class="ckpi"><div class="ckpi-lbl">Realna prognoza (benchm.)</div><div class="ckpi-val red">80–120 tys.</div><div class="ckpi-sub red">profil sportowy, brak rekreacji</div></div>
-  </div>
-</div>
-</div>
-
-<div class="main">
-
-<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:24px">
-  <div class="card" style="border-left:4px solid var(--r);border-radius:0 14px 14px 0">
-    <div class="card-title">Kluczowe ryzyko #1</div>
-    <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;margin-bottom:6px">Bufor finansowy 1,13M zł</div>
-    <div style="font-size:12px;color:var(--soft);line-height:1.6">Po kredycie i dopłacie operacyjnej wolna nadwyżka spada do zaledwie 1,13M zł. Przy Iran −3% PIT/CIT gmina schodzi poniżej minimum bezpieczeństwa.</div>
-  </div>
-  <div class="card" style="border-left:4px solid var(--r);border-radius:0 14px 14px 0">
-    <div class="card-title">Kluczowe ryzyko #2</div>
-    <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;margin-bottom:6px">Frekwencja zawyżona o 27–47 tys.</div>
-    <div style="font-size:12px;color:var(--soft);line-height:1.6">Plan 147 000 wejść vs 100–130 tys. dla podobnych basenów sportowych. Różnica = 427–1 006 tys. zł mniej przychodów rocznie.</div>
-  </div>
-  <div class="card" style="border-left:4px solid var(--y);border-radius:0 14px 14px 0">
-    <div class="card-title">Kluczowe ryzyko #3</div>
-    <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;margin-bottom:6px">Gaz 0 zł przez 4 lata</div>
-    <div style="font-size:12px;color:var(--soft);line-height:1.6">Analiza ProPOLIS nie uwzględnia kosztów ogrzewania basenu — 280–500 tys. zł/rok. Brak wyjaśnienia źródła ciepła w całym dokumencie.</div>
-  </div>
-</div>
-
-<div class="g2">
-<div class="card">
-  <div class="card-title">Scenariusze ryzyka — wolna nadwyżka po inwestycji</div>
-  <div class="ch"><canvas id="cScen" role="img" aria-label="Scenariusze ryzyka wolnej nadwyżki">Wolna nadwyżka: 2026 bez basenu 7,27M, 2027 po kredycie 5,27M, 2029 z dopłatą 1,13M, Iran -3% -2,59M, Iran -6% -6,32M</canvas></div>
-</div>
-<div class="card">
-  <div class="card-title">Montaż finansowy basenu — podział 50M zł</div>
-  <div class="ch"><canvas id="cMontaz" role="img" aria-label="Montaż finansowy basenu">Dotacja 26M (52%), Kredyt gminy 24M (48%)</canvas></div>
-</div>
-</div>
-
-<div class="card">
-  <div class="card-title">Wpływ na budżet 2026–2029 — kluczowe liczby</div>
-  <table class="tbl">
-    <thead><tr><th>Wskaźnik</th><th>Budżet 2026 (bez basenu)</th><th>Po kredycie 24M (2027)</th><th>Po kredycie + dopłacie (2029+)</th><th>Zmiana</th></tr></thead>
-    <tbody>
-      <tr><td>Nadwyżka operacyjna</td><td class="num">16,44M zł</td><td class="num">15,63M zł</td><td class="num">~16,44M zł</td><td class="dn">−2,00M raty</td></tr>
-      <tr><td>Obsługa długu</td><td class="num">9,17M zł</td><td class="num">11,17M zł</td><td class="num">11,17M zł</td><td class="dn">+2,00M</td></tr>
-      <tr><td>Dopłata do basenu</td><td class="num">—</td><td class="num">—</td><td class="num">2,14M zł</td><td class="dn">+2,14M</td></tr>
-      <tr class="hl-r"><td><strong>Wolna nadwyżka</strong></td><td class="num dp">7,27M zł</td><td class="num" style="color:var(--y)">5,27M zł</td><td class="num dn">1,13M zł</td><td class="dn">−6,14M ⚠</td></tr>
-      <tr><td>Pokrycie obsługi długu</td><td class="num dp">179%</td><td class="num">147%</td><td class="num" style="color:var(--y)">113%</td><td class="dn">−66 pp</td></tr>
-      <tr><td>IWZ art. 243</td><td class="num">6,06%</td><td class="num">7,38%</td><td class="num">7,38%</td><td>+1,32 pp (limit 14,74%)</td></tr>
-    </tbody>
-  </table>
-</div>
-
-</div>
-</div>
-
-<!-- ══════════════════════════════════════════════
-     VIEW 2 — BENCHMARKI
-══════════════════════════════════════════════ -->
-<div id="view-benchmarks" class="view">
-
-<div class="cover">
-<div class="cover-inner">
-  <div class="cover-badge">Benchmarki · dane publiczne</div>
-  <h1>Frekwencja krytych pływalni<br><span>w polskich gminach</span></h1>
-  <div class="cover-sub">8 obiektów · gminy 6–46 tys. mieszkańców · dane 2016–2025 · źródła: MOSiR, BIP, prasa lokalna</div>
-  <div class="cover-kpis">
-    <div class="ckpi"><div class="ckpi-lbl">Mediana (podobne gminy)</div><div class="ckpi-val">~130 tys.</div><div class="ckpi-sub warn">wejść / rok</div></div>
-    <div class="ckpi"><div class="ckpi-lbl">Plan Kostrzyn 2029</div><div class="ckpi-val warn">147 tys.</div><div class="ckpi-sub warn">optymistyczny</div></div>
-    <div class="ckpi"><div class="ckpi-lbl">Realna prognoza (sport)</div><div class="ckpi-val red">80–120 tys.</div><div class="ckpi-sub red">brak rekreacji</div></div>
-    <div class="ckpi"><div class="ckpi-lbl">10 tys. wejść mniej =</div><div class="ckpi-val red">−214 tys. zł</div><div class="ckpi-sub red">przychodów rocznie</div></div>
+<div class="hero">
+<div class="hero-inner">
+  <div class="hero-tag">Uchwała XXVII/240/2026 · 27 kwietnia 2026</div>
+  <h1>Budżet Gminy Kostrzyn<br><em>na rok 2026 — po zmianach</em></h1>
+  <div class="hero-sub">Zmiana nr 2 · dochody +1 454 089 zł · wynik bez zmian</div>
+  <div class="kpis">
+    <div class="kpi blue-bg">
+      <div class="kpi-lbl">Dochody łącznie</div>
+      <div class="kpi-val blue">186,9 mln</div>
+      <div class="kpi-note">bież. 152,7 · maj. 34,2 mln</div>
+    </div>
+    <div class="kpi red-bg">
+      <div class="kpi-lbl">Wydatki łącznie</div>
+      <div class="kpi-val red">212,0 mln</div>
+      <div class="kpi-note">bież. 136,0 · maj. 76,0 mln</div>
+    </div>
+    <div class="kpi red-bg">
+      <div class="kpi-lbl">Deficyt budżetu</div>
+      <div class="kpi-val red">−25,1 mln</div>
+      <div class="kpi-note">finans. kredytem i śr. własnymi</div>
+    </div>
+    <div class="kpi green-bg">
+      <div class="kpi-lbl">Nadwyżka operacyjna</div>
+      <div class="kpi-val green">+16,7 mln</div>
+      <div class="kpi-note">doch. bież. − wyd. bież. = 10,9%</div>
+    </div>
+    <div class="kpi amber-bg">
+      <div class="kpi-lbl">Obsługa długu</div>
+      <div class="kpi-val amber">9,2 mln</div>
+      <div class="kpi-note">pokrycie 179% — bezpieczne</div>
+    </div>
+    <div class="kpi green-bg">
+      <div class="kpi-lbl">Wolna nadwyżka</div>
+      <div class="kpi-val green">7,5 mln</div>
+      <div class="kpi-note">po pełnej obsłudze długu</div>
+    </div>
   </div>
 </div>
 </div>
 
 <div class="main">
 
-<div class="sh"><div class="sh-num b">1</div><div>
-  <div class="sh-title">Frekwencja roczna — porównanie obiektów</div>
-  <div class="sh-sub">Posortowane rosnąco · niebieski = Kostrzyn</div>
-</div></div>
+<div class="section-hdr">
+  <span class="section-num">01</span>
+  <span class="section-title">Zmiany wprowadzone uchwałą</span>
+</div>
 
 <div class="g2">
 <div class="card">
-  <div class="card-title">Wykres słupkowy — frekwencja (tys. wejść)</div>
-  <div class="ch tall"><canvas id="cBench" role="img" aria-label="Porównanie frekwencji pływalni w Polsce">Od 36 tys. w Michałowie do 183 tys. w Kępnie. Kostrzyn planuje 147 tys.</canvas></div>
-</div>
-<div class="card">
-  <div class="card-title">Wizualizacja liniowa — skala porównawcza</div>
-  <div style="padding:8px 0">
-    <div class="bar-row"><div class="bar-name">Michałowo (~6 tys.)</div><div class="bar-track"><div class="bar-fill" style="width:20%;background:#888780"></div></div><div class="bar-val">36 tys.</div></div>
-    <div class="bar-row"><div class="bar-name">Starachowice (~46 tys.)</div><div class="bar-track"><div class="bar-fill" style="width:55%;background:#d97706"></div></div><div class="bar-val">100 tys.</div></div>
-    <div class="bar-row"><div class="bar-name">Nakło (~19 tys.)</div><div class="bar-track"><div class="bar-fill" style="width:60%;background:#d97706"></div></div><div class="bar-val">110 tys.</div></div>
-    <div class="bar-row"><div class="bar-name">Bocheń (~33 tys.)</div><div class="bar-track"><div class="bar-fill" style="width:72%;background:#16a34a"></div></div><div class="bar-val">132 tys.</div></div>
-    <div class="bar-row"><div class="bar-name highlight">KOSTRZYN (plan)</div><div class="bar-track"><div class="bar-fill" style="width:80%;background:#2563eb"></div></div><div class="bar-val highlight">147 tys.</div></div>
-    <div class="bar-row"><div class="bar-name">Trzebinia (~20 tys.)</div><div class="bar-track"><div class="bar-fill" style="width:82%;background:#16a34a"></div></div><div class="bar-val">150 tys.</div></div>
-    <div class="bar-row"><div class="bar-name">Wadowice (~18 tys.)</div><div class="bar-track"><div class="bar-fill" style="width:93%;background:#16a34a"></div></div><div class="bar-val">170 tys.</div></div>
-    <div class="bar-row"><div class="bar-name">Proszowice (~11 tys.)</div><div class="bar-track"><div class="bar-fill" style="width:99%;background:#16a34a"></div></div><div class="bar-val">181 tys.</div></div>
-    <div class="bar-row"><div class="bar-name">Kępno (~14 tys.)</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:#16a34a"></div></div><div class="bar-val">183 tys.</div></div>
+  <div class="card-title">Dochody — co się zmieniło</div>
+  <div class="wf">
+    <div class="wf-row">
+      <div class="wf-lbl">Przed zmianą</div>
+      <div class="wf-bar-wrap"><div class="wf-bar" style="width:100%;background:#ddd8d0;color:var(--ink2)">185 437 956 zł</div></div>
+    </div>
+    <div class="wf-row">
+      <div class="wf-lbl">+ Podatek akcyzowy (rolnicy)</div>
+      <div class="wf-bar-wrap"><div class="wf-bar" style="width:81%;background:#c0dfcf;color:#1a5234">+1 179 889 zł</div></div>
+    </div>
+    <div class="wf-row">
+      <div class="wf-lbl">+ Drogi powiatowe (Powiat Poz.)</div>
+      <div class="wf-bar-wrap"><div class="wf-bar" style="width:6%;background:#c0dfcf;color:#1a5234">+82 890 zł</div></div>
+    </div>
+    <div class="wf-row">
+      <div class="wf-lbl">+ MSiT — Orlik (refundacja 2025)</div>
+      <div class="wf-bar-wrap"><div class="wf-bar" style="width:7%;background:#c0dfcf;color:#1a5234">+100 000 zł</div></div>
+    </div>
+    <div class="wf-row">
+      <div class="wf-lbl">+ Pozostałe (PESEL/Ukraina)</div>
+      <div class="wf-bar-wrap"><div class="wf-bar" style="width:1%;background:#c0dfcf;color:#1a5234">+309 zł</div></div>
+    </div>
+    <div class="wf-row" style="border-top:1px solid var(--line);margin-top:4px;padding-top:4px">
+      <div class="wf-lbl" style="font-weight:500">Po zmianie</div>
+      <div class="wf-bar-wrap"><div class="wf-bar" style="width:100%;background:#1e4d8c;color:white">186 892 045 zł</div></div>
+    </div>
   </div>
 </div>
+<div class="card">
+  <div class="card-title">Struktura dochodów bieżących</div>
+  <div class="ch" style="height:220px"><canvas id="cDochody" role="img" aria-label="Struktura dochodów bieżących gminy Kostrzyn 2026">PIT 87,7 mln, CIT 10,4 mln, Podatek od nieruchomości 19,6 mln, Dotacje 9,0 mln, Pozostałe 25,8 mln</canvas></div>
+</div>
 </div>
 
-<div class="sh"><div class="sh-num r">2</div><div>
-  <div class="sh-title">Szczegółowa tabela porównawcza</div>
-  <div class="sh-sub">Kostrzyn podświetlony na niebiesko</div>
-</div></div>
+<div class="section-hdr">
+  <span class="section-num">02</span>
+  <span class="section-title">Kluczowe wskaźniki finansowe</span>
+</div>
 
-<div class="card" style="margin-bottom:16px">
+<div class="card">
 <table class="tbl">
-  <thead><tr><th>Gmina</th><th>Mieszk.</th><th>Typ basenu</th><th>Frekwencja roczna</th><th>Dopłata gminy/rok</th><th>Ocena</th></tr></thead>
-  <tbody>
-    <tr><td><strong>Proszowice</strong><br><small class="num" style="color:var(--dim)">woj. małopolskie</small></td><td class="num">~11 tys.</td><td>25m, 6t + rekreacja</td><td><strong class="num dp">181 000</strong><br><small style="color:var(--dim)">rok 1 (2016) — strefa rekreacyjna</small></td><td class="num dp">~500 tys. zł</td><td><span class="badge ok">wzorcowy</span></td></tr>
-    <tr><td><strong>Kępno</strong><br><small class="num" style="color:var(--dim)">woj. wielkopolskie</small></td><td class="num">~14 tys.</td><td>25m, pełny</td><td><strong class="num dp">~183 000</strong><br><small style="color:var(--dim)">ekstrapolacja 7 mies. — 700 osobogodzin/dzień</small></td><td class="num dn">~2,2 mln zł</td><td><span class="badge warn">kosztowny</span></td></tr>
-    <tr><td><strong>Wadowice "Delfin"</strong><br><small class="num" style="color:var(--dim)">woj. małopolskie</small></td><td class="num">~18 tys.</td><td>25m + sauna</td><td><strong class="num dp">~170 000</strong><br><small style="color:var(--dim)">wrzesień 2025: rekord 20 053/mies.</small></td><td class="num" style="color:var(--dim)">b.d.</td><td><span class="badge ok">stabilny</span></td></tr>
-    <tr><td><strong>Trzebinia Aqua Planet</strong><br><small class="num" style="color:var(--dim)">woj. małopolskie</small></td><td class="num">~20 tys.</td><td>rekreacyjny</td><td><strong class="num dp">150 000</strong><br><small style="color:var(--dim)">stabilnie przez 20 lat</small></td><td class="num" style="color:var(--dim)">b.d.</td><td><span class="badge ok">stabilny</span></td></tr>
-    <tr><td><strong>Bocheń</strong><br><small class="num" style="color:var(--dim)">woj. małopolskie</small></td><td class="num">~33 tys.</td><td>25m, 6t sport.</td><td><strong class="num">132 588</strong><br><small style="color:var(--dim)">2019 — 4. wynik w 20-letniej historii</small></td><td class="num" style="color:var(--dim)">b.d.</td><td><span class="badge gray">porównywalny</span></td></tr>
-    <tr><td><strong>Nakło n. Notecią</strong><br><small class="num" style="color:var(--dim)">woj. kuj.-pom.</small></td><td class="num">~19 tys.</td><td>25m + rekreacja</td><td><strong class="num" style="color:var(--y)">~110 000</strong><br><small style="color:var(--dim)">stabilizacja po otwarciu</small></td><td class="num dn">~800 tys. zł</td><td><span class="badge warn">deficytowy</span></td></tr>
-    <tr><td><strong>Starachowice</strong><br><small class="num" style="color:var(--dim)">woj. świętokrzyskie</small></td><td class="num">~46 tys.</td><td>25m, 6t sport.</td><td><strong class="num" style="color:var(--y)">~100 000</strong><br><small style="color:var(--dim)">koszty 2,4 mln vs przychody 1 mln (2018)</small></td><td class="num dn">1,41 mln zł</td><td><span class="badge danger">duży deficyt</span></td></tr>
-    <tr><td><strong>Michałowo</strong><br><small class="num" style="color:var(--dim)">woj. podlaskie</small></td><td class="num">~6 tys.</td><td>mały basen</td><td><strong class="num dn">36 000</strong><br><small style="color:var(--dim)">3 tys. / miesiąc</small></td><td class="num dn">~700 tys. zł</td><td><span class="badge danger">duży koszt</span></td></tr>
-    <tr class="hl-b"><td><strong style="color:var(--b)">KOSTRZYN — plan 2029</strong><br><small class="num" style="color:var(--dim)">woj. wielkopolskie · ~19 787 mieszk.</small></td><td class="num"><strong>~19 787</strong></td><td>25m, 6t sportowy<br><small style="color:var(--dim)">bez strefy rekreacyjnej</small></td><td><strong class="num" style="color:var(--b)">147 000</strong><br><small style="color:var(--dim)">plan ProPOLIS — rok otwarcia 2029</small></td><td class="num dn"><strong>2,14 mln zł</strong></td><td><span class="badge info">do weryfikacji</span></td></tr>
-  </tbody>
-</table>
-</div>
-
-<div class="alert y">
-  <div class="alert-icon">⚠</div>
-  <div><strong>Wniosek kluczowy:</strong> Obiekty osiągające 150–183 tys. wejść (Proszowice, Kępno, Wadowice) mają rozbudowaną strefę rekreacyjną. Kostrzyn planuje basen czysto sportowy — porównywalne baseny sportowe 25m bez rekreacji stabilizują się na 100–130 tys. wejść. Dyrektor pływalni w Starachowicach: <em>"Nie znam publicznych pływalni, które są rentowne."</em></div>
-</div>
-
-</div>
-</div>
-
-<!-- ══════════════════════════════════════════════
-     VIEW 3 — PYTANIA
-══════════════════════════════════════════════ -->
-<div id="view-questions" class="view">
-
-<div class="cover">
-<div class="cover-inner">
-  <div class="cover-badge">22 pytania · 6 bloków tematycznych</div>
-  <h1>Pytania do Burmistrza<br><span>na Komisję Budżetu</span></h1>
-  <div class="cover-sub">Opatrzone podstawą dokumentową · Analiza ProPOLIS + Audyt zewnętrzny + doświadczenia ukraińskie</div>
-  <div class="cover-kpis">
-    <div class="ckpi"><div class="ckpi-lbl">Blok I — Kredyt</div><div class="ckpi-val">pyt. 1–4</div><div class="ckpi-sub red">priorytet krytyczny</div></div>
-    <div class="ckpi"><div class="ckpi-lbl">Blok II — Budżet</div><div class="ckpi-val">pyt. 5–7</div><div class="ckpi-sub red">priorytet krytyczny</div></div>
-    <div class="ckpi"><div class="ckpi-lbl">Blok III — Energia</div><div class="ckpi-val">pyt. 8–11</div><div class="ckpi-sub red">priorytet krytyczny</div></div>
-    <div class="ckpi"><div class="ckpi-lbl">Blok IV — Sztuki walki</div><div class="ckpi-val">pyt. 12–14</div><div class="ckpi-sub warn">ważny</div></div>
-    <div class="ckpi"><div class="ckpi-lbl">Blok V — Dotacje</div><div class="ckpi-val">pyt. 15–16</div><div class="ckpi-sub warn">ważny</div></div>
-    <div class="ckpi"><div class="ckpi-lbl">Blok VI — Schronienie</div><div class="ckpi-val">pyt. 17–22</div><div class="ckpi-sub red">priorytet krytyczny</div></div>
-  </div>
-</div>
-</div>
-
-<div class="main">
-
-
-<!-- ═══════════════════════════════
-     BLOK I — KREDYT
-═══════════════════════════════ -->
-<div class="sec">
-<div class="sec-hdr">
-  <div class="sec-icon r">I</div>
-  <div>
-    <div class="sec-title">Kredyt — kwota, warunki, harmonogram</div>
-    <div class="sec-sub">Pytania dotyczące 24 mln zł finansowania dłużnego i jego wpływu na WPF</div>
-  </div>
-</div>
-
-<div class="q">
-  <div class="q-head">
-    <div class="q-num r">1</div>
-    <div class="q-body">
-      <div class="q-title">Skąd pochodzi oprocentowanie 3% i czy jest ono zagwarantowane?</div>
-      <div class="q-text">Rynkowe oprocentowanie kredytu komunalnego wynosi obecnie <strong>WIBOR 3M (4,1%) + marża ok. 1,0–1,5% = 5,1–5,6%</strong>. Skąd pochodzi zakładane 3%? Czy gmina złożyła wniosek do BGK, BOŚ lub innego banku preferencyjnego? Czy jest już promesa kredytowa lub wstępna oferta banku? Jeśli rzeczywiste oprocentowanie wyniesie 5,5% zamiast 3%, rata roczna wzrośnie z 2,00M zł do <strong>2,65M zł</strong> (+650 tys. zł rocznie).</div>
-    </div>
-  </div>
-  <div class="q-context"><span>Podstawa:</span> Analiza ProPOLIS przyjmuje kredyt 24M bez podania źródła ani oprocentowania. WIBOR 3M według tabeli makro w dok.: 4,1% na lata 2026–2032.</div>
-
-  <div class="q-comment-bar">
-    <button class="q-comment-btn" id="cb1" onclick="toggleComment(1)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
-    <span id="cs1" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
-  </div>
-  <div class="q-comment-area" id="ca1">
-    <div class="q-comment-saved" id="cd1"></div>
-    <textarea class="q-comment-input" id="ci1" placeholder="Komentarz do pytania 1... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
-    <div class="q-comment-actions">
-      <button class="q-save-btn" onclick="saveComment(1)">Zapisz</button>
-      <button class="q-clear-btn" onclick="clearComment(1)">Usuń</button>
-      <span class="q-hint">Ctrl+Enter = zapisz</span>
-    </div>
-  </div>
-</div>
-
-<div class="q">
-  <div class="q-head">
-    <div class="q-num r">2</div>
-    <div class="q-body">
-      <div class="q-title">Kiedy konkretnie zostanie zaciągnięty kredyt — w całości czy transzami?</div>
-      <div class="q-text">Budowa planowana jest na lata 2026–2028. Zaciągnięcie całych 24M zł naraz oznacza płacenie odsetek od pełnej kwoty przez 2–3 lata budowy. <strong>Czy kredyt będzie uruchamiany transzami</strong> zgodnie z harmonogramem robót? Transzowanie przy 3% zaoszczędza ok. 700 tys.–1M zł odsetek w fazie budowy.</div>
-    </div>
-  </div>
-  <div class="q-context"><span>Podstawa:</span> Dobra praktyka finansów samorządowych — kredyt uruchamiany transzami obniża łączny koszt odsetkowy.</div>
-
-  <div class="q-comment-bar">
-    <button class="q-comment-btn" id="cb2" onclick="toggleComment(2)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
-    <span id="cs2" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
-  </div>
-  <div class="q-comment-area" id="ca2">
-    <div class="q-comment-saved" id="cd2"></div>
-    <textarea class="q-comment-input" id="ci2" placeholder="Komentarz do pytania 2... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
-    <div class="q-comment-actions">
-      <button class="q-save-btn" onclick="saveComment(2)">Zapisz</button>
-      <button class="q-clear-btn" onclick="clearComment(2)">Usuń</button>
-      <span class="q-hint">Ctrl+Enter = zapisz</span>
-    </div>
-  </div>
-</div>
-
-<div class="q">
-  <div class="q-head">
-    <div class="q-num r">3</div>
-    <div class="q-body">
-      <div class="q-title">Jak kredyt 24M wpłynie na IWZ i WPF w latach 2027–2030 przy jednoczesnym kredycie 10M planowanym przy Skałowie?</div>
-      <div class="q-text">Analiza wskazuje planowany <strong>dodatkowy kredyt ~10M zł w 2027</strong> związany ze Skałowem. Łączne nowe zadłużenie 2026–2027: <strong>34M zł</strong>. Prosimy o przedstawienie aktualnej Wieloletniej Prognozy Finansowej z uwzględnieniem obu kredytów i dopłaty operacyjnej do basenu od 2029 r. IWZ po obu kredytach sięgnie szacunkowo <strong>9,0–9,5%</strong> — wciąż poniżej limitu 14,74%, ale wymagające monitorowania.</div>
-    </div>
-  </div>
-  <div class="q-context"><span>Podstawa:</span> Budżet 2026 po zmianie 30.03.2026: IWZ = 6,06%. Kredyt 24M → IWZ ~7,38%. Kredyt 10M Skałów 2027 → IWZ ~8,7–9,2%.</div>
-
-  <div class="q-comment-bar">
-    <button class="q-comment-btn" id="cb3" onclick="toggleComment(3)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
-    <span id="cs3" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
-  </div>
-  <div class="q-comment-area" id="ca3">
-    <div class="q-comment-saved" id="cd3"></div>
-    <textarea class="q-comment-input" id="ci3" placeholder="Komentarz do pytania 3... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
-    <div class="q-comment-actions">
-      <button class="q-save-btn" onclick="saveComment(3)">Zapisz</button>
-      <button class="q-clear-btn" onclick="clearComment(3)">Usuń</button>
-      <span class="q-hint">Ctrl+Enter = zapisz</span>
-    </div>
-  </div>
-</div>
-
-<div class="q">
-  <div class="q-head">
-    <div class="q-num r">4</div>
-    <div class="q-body">
-      <div class="q-title">Czy w umowie kredytowej zostanie zapisana klauzula wcześniejszej spłaty bez kary?</div>
-      <div class="q-text">Refundacja FEW ze Skałowa (13,28M zł z paragrafu 6057) spłynie prawdopodobnie w 2027 lub 2028. <strong>Czy gmina może te środki przeznaczyć na częściową spłatę kredytu bez prowizji?</strong> Bez tej klauzuli wolne środki leżą w budżecie przynosząc straty, podczas gdy kredyt jest oprocentowany.</div>
-    </div>
-  </div>
-  <div class="q-context"><span>Podstawa:</span> Dług Skałów: §6057 spada z 17,87M do 13,28M — oczekiwana refundacja FEW ~13,28M w 2027–2028.</div>
-
-  <div class="q-comment-bar">
-    <button class="q-comment-btn" id="cb4" onclick="toggleComment(4)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
-    <span id="cs4" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
-  </div>
-  <div class="q-comment-area" id="ca4">
-    <div class="q-comment-saved" id="cd4"></div>
-    <textarea class="q-comment-input" id="ci4" placeholder="Komentarz do pytania 4... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
-    <div class="q-comment-actions">
-      <button class="q-save-btn" onclick="saveComment(4)">Zapisz</button>
-      <button class="q-clear-btn" onclick="clearComment(4)">Usuń</button>
-      <span class="q-hint">Ctrl+Enter = zapisz</span>
-    </div>
-  </div>
-</div>
-
-</div><!-- /sec I -->
-
-<!-- ═══════════════════════════════
-     BLOK II — WPŁYW NA BUDŻET
-═══════════════════════════════ -->
-<div class="sec">
-<div class="sec-hdr">
-  <div class="sec-icon y">II</div>
-  <div>
-    <div class="sec-title">Wpływ na budżet — wolna nadwyżka i ryzyka</div>
-    <div class="sec-sub">Pytania o rzeczywisty skutek inwestycji dla kondycji finansowej gminy</div>
-  </div>
-</div>
-
-<div class="alert y">
-  <div class="alert-icon">⚠</div>
-  <div>Aktualna wolna nadwyżka gminy: <strong>7,27 mln zł</strong>. Po kredycie 24M i dopłacie operacyjnej do basenu (~2,14M/rok od 2029): <strong>1,13 mln zł</strong>. Przy Iran −3% PIT/CIT gmina schodzi poniżej minimum bezpieczeństwa — obsługa długu nie byłaby w pełni pokryta nadwyżką operacyjną.</div>
-</div>
-
-<div class="q">
-  <div class="q-head">
-    <div class="q-num y">5</div>
-    <div class="q-body">
-      <div class="q-title">Czy WPF zawiera jawną pozycję dopłaty do basenu w wysokości ~2,14 mln zł/rok od 2029 roku?</div>
-      <div class="q-text">Audyt zewnętrzny (ProPOLIS 30.03.2026) wykazał, że <strong>34,4% przychodów basenu (2 188 995 zł w 2029 r.) to transfer z budżetu gminy</strong> na lekcje pływania dla uczniów — ujęty jako "przychód obiektu", choć w ujęciu skonsolidowanym jest to wydatek gminy. Po wyłączeniu tego transferu basen generuje realny <strong>deficyt 2,14M zł/rok</strong>. Czy ta kwota jest zaplanowana w WPF jako stała pozycja na lata 2029–2044?</div>
-    </div>
-  </div>
-  <div class="q-context"><span>Podstawa:</span> Tabela 14 analizy ProPOLIS: wpływy basenu 2029 = 6 365 563 zł, z czego "nauka pływania dla uczniów gminy" = 2 188 995 zł (transfer budżetowy). Wynik po konsolidacji: −2 137 100 zł.</div>
-
-  <div class="q-comment-bar">
-    <button class="q-comment-btn" id="cb5" onclick="toggleComment(5)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
-    <span id="cs5" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
-  </div>
-  <div class="q-comment-area" id="ca5">
-    <div class="q-comment-saved" id="cd5"></div>
-    <textarea class="q-comment-input" id="ci5" placeholder="Komentarz do pytania 5... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
-    <div class="q-comment-actions">
-      <button class="q-save-btn" onclick="saveComment(5)">Zapisz</button>
-      <button class="q-clear-btn" onclick="clearComment(5)">Usuń</button>
-      <span class="q-hint">Ctrl+Enter = zapisz</span>
-    </div>
-  </div>
-</div>
-
-<div class="q">
-  <div class="q-head">
-    <div class="q-num y">6</div>
-    <div class="q-body">
-      <div class="q-title">Jaki jest scenariusz dla budżetu przy spadku PIT/CIT o 6% (scenariusz Iran — konflikt)?</div>
-      <div class="q-text">Przy kredycie 24M/15lat/3% i dopłacie operacyjnej, łączne roczne obciążenie budżetu wynosi <strong>4,14M zł</strong> (rata 2,0M + dopłata 2,14M). Nadwyżka operacyjna przy Iran −6% to szacunkowo <strong>8,99M zł</strong>, obsługa długu łącznie (stary + nowy kredyt) to <strong>11,17M zł</strong> — pokrycie wyniesie zaledwie <strong>80%</strong>. Prosimy o stress-test: jak gmina zapewni obsługę długu przy takim scenariuszu?</div>
-    </div>
-  </div>
-  <div class="q-context"><span>Podstawa:</span> BASE: surplus 16,44M, debtService 9,17M. Kredyt 24M: +2,0M raty. Iran −6%: −7,44M PIT/CIT. Wynik: 16,44−7,44 = 8,99M nadwyżki vs 11,17M obsługi długu.</div>
-
-  <div class="q-comment-bar">
-    <button class="q-comment-btn" id="cb6" onclick="toggleComment(6)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
-    <span id="cs6" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
-  </div>
-  <div class="q-comment-area" id="ca6">
-    <div class="q-comment-saved" id="cd6"></div>
-    <textarea class="q-comment-input" id="ci6" placeholder="Komentarz do pytania 6... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
-    <div class="q-comment-actions">
-      <button class="q-save-btn" onclick="saveComment(6)">Zapisz</button>
-      <button class="q-clear-btn" onclick="clearComment(6)">Usuń</button>
-      <span class="q-hint">Ctrl+Enter = zapisz</span>
-    </div>
-  </div>
-</div>
-
-<div class="q">
-  <div class="q-head">
-    <div class="q-num y">7</div>
-    <div class="q-body">
-      <div class="q-title">Jaki jest plan B jeśli frekwencja basenu w pierwszym roku będzie o 20% niższa niż zakładane 147 000 wejść?</div>
-      <div class="q-text">Audyt wykazał, że <strong>spadek frekwencji o zaledwie 10%</strong> (do 132 300 wejść) odwraca wynik operatora basenu na ujemny. Przy −20% (117 600 wejść) deficyt operatorski wynosi ok. <strong>350 tys. zł rocznie</strong>, a realna dopłata gminy rośnie do ~2,49M zł/rok. Analiza ProPOLIS nie zawiera żadnej analizy catchment ani porównania z obiektami referencyjnymi — skąd pochodzi liczba 147 000 wejść?</div>
-    </div>
-  </div>
-  <div class="q-context"><span>Podstawa:</span> Audyt zewnętrzny, sekcja "wrażliwość na frekwencję": przy −10% wynik basenu = −35 tys. zł; przy −20% = −350 tys. zł (ujęcie operatorskie).</div>
-
-  <div class="q-comment-bar">
-    <button class="q-comment-btn" id="cb7" onclick="toggleComment(7)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
-    <span id="cs7" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
-  </div>
-  <div class="q-comment-area" id="ca7">
-    <div class="q-comment-saved" id="cd7"></div>
-    <textarea class="q-comment-input" id="ci7" placeholder="Komentarz do pytania 7... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
-    <div class="q-comment-actions">
-      <button class="q-save-btn" onclick="saveComment(7)">Zapisz</button>
-      <button class="q-clear-btn" onclick="clearComment(7)">Usuń</button>
-      <span class="q-hint">Ctrl+Enter = zapisz</span>
-    </div>
-  </div>
-</div>
-
-</div><!-- /sec II -->
-
-<!-- ═══════════════════════════════
-     BLOK III — KOSZTY FUNKCJONOWANIA
-═══════════════════════════════ -->
-<div class="sec">
-<div class="sec-hdr">
-  <div class="sec-icon b">III</div>
-  <div>
-    <div class="sec-title">Koszty funkcjonowania basenu — analiza szczegółowa</div>
-    <div class="sec-sub">Pytania o energię, ogrzewanie, OZE i koszty cyklu życia obiektu</div>
-  </div>
-</div>
-
-<div class="q">
-  <div class="q-head">
-    <div class="q-num b">8</div>
-    <div class="q-body">
-      <div class="q-title">Dlaczego gaz ziemny wynosi 0 zł przez cały horyzont 2029–2032? Jakie jest źródło ciepła dla basenu?</div>
-      <div class="q-text">W analizie ProPOLIS wiersz <strong>"gaz ziemny (ogrzewanie): — — — —"</strong> pojawia się dla każdego obiektu — z wartością zero. Podgrzewanie wody basenowej (28–30°C), wentylacja hali i ogrzewanie szatni to <strong>60–70% kosztów operacyjnych pływalni</strong>. Szacunkowy roczny koszt ciepła dla basenu 25m to 280–500 tys. zł/rok zależnie od technologii. Czy zakłada się podłączenie do sieci ciepłowniczej MPEC? Pompy ciepła? Jeśli tak — jaki jest koszt CAPEX tych instalacji i gdzie jest ujęty w kosztorysie?</div>
-    </div>
-  </div>
-  <div class="q-context"><span>Podstawa:</span> Analiza ProPOLIS Tab. 12 (basen), Tab. 17 (squash), Tab. 22 (sztuki walki) — wszystkie mają §4260 gaz ziemny = 0 zł. Energia elektryczna basenu: 1 284 946 zł w 2029.</div>
-
-  <div class="q-comment-bar">
-    <button class="q-comment-btn" id="cb8" onclick="toggleComment(8)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
-    <span id="cs8" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
-  </div>
-  <div class="q-comment-area" id="ca8">
-    <div class="q-comment-saved" id="cd8"></div>
-    <textarea class="q-comment-input" id="ci8" placeholder="Komentarz do pytania 8... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
-    <div class="q-comment-actions">
-      <button class="q-save-btn" onclick="saveComment(8)">Zapisz</button>
-      <button class="q-clear-btn" onclick="clearComment(8)">Usuń</button>
-      <span class="q-hint">Ctrl+Enter = zapisz</span>
-    </div>
-  </div>
-</div>
-
-<div class="q">
-  <div class="q-head">
-    <div class="q-num b">9</div>
-    <div class="q-body">
-      <div class="q-title">Czy projekt przewiduje OZE — fotowoltaikę, pompę ciepła, rekuperację? Jeśli tak, jaki jest szacowany zwrot z inwestycji?</div>
-      <div class="q-text">W całej analizie ProPOLIS (104 strony) <strong>nie ma ani jednej wzmianki o OZE, fotowoltaice, pompie ciepła ani rekuperacji</strong>. Dla porównania: pływalnia Grunwald w Poznaniu (43,5M zł) ma panele fotowoltaiczne na dachu. Program MSiT dla pływalni wymaga efektywności energetycznej. Czy projekt architektoniczny przewiduje OZE? Czy wpłynie to na koszty eksploatacyjne ujęte w analizie?</div>
-    </div>
-  </div>
-  <div class="q-context"><span>Podstawa:</span> Przeszukanie całego dok. ProPOLIS: brak wyników dla "OZE", "fotowolt", "pompa ciepła", "rekuperacja", "energooszczęd". Pływalnia Grunwald Poznań: panele PV na dachu — standard 2024–2026.</div>
-
-  <div class="q-comment-bar">
-    <button class="q-comment-btn" id="cb9" onclick="toggleComment(9)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
-    <span id="cs9" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
-  </div>
-  <div class="q-comment-area" id="ca9">
-    <div class="q-comment-saved" id="cd9"></div>
-    <textarea class="q-comment-input" id="ci9" placeholder="Komentarz do pytania 9... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
-    <div class="q-comment-actions">
-      <button class="q-save-btn" onclick="saveComment(9)">Zapisz</button>
-      <button class="q-clear-btn" onclick="clearComment(9)">Usuń</button>
-      <span class="q-hint">Ctrl+Enter = zapisz</span>
-    </div>
-  </div>
-</div>
-
-<div class="q">
-  <div class="q-head">
-    <div class="q-num b">10</div>
-    <div class="q-body">
-      <div class="q-title">Czy w kosztach operacyjnych uwzględniono rezerwę na remonty kapitalny i wymianę technologii basenowej?</div>
-      <div class="q-text">Filtry piaskowe, pompy cyrkulacyjne, centrale wentylacyjne i wymienniki ciepła mają żywotność <strong>10–15 lat</strong> i wymagają wymiany za kwoty 500 tys.–2M zł. W analizie pozycja "zakup usług remontowych" dla basenu wynosi zaledwie <strong>60 000–80 000 zł/rok</strong> — niewystarczające na technologię basenową. Gdzie zaplanowana jest rezerwa na odtworzenie majątku technicznego?</div>
-    </div>
-  </div>
-  <div class="q-context"><span>Podstawa:</span> Tab. 12 ProPOLIS: §4270 usługi remontowe = 60 000 zł (2029), 80 000 zł (2030–2032). Audyt zewnętrzny: "brak kosztów cyklu życia (LCC) — rezerwy na remonty i odtworzenie technologii". Technologia basenowa wymiana co 10–15 lat.</div>
-
-  <div class="q-comment-bar">
-    <button class="q-comment-btn" id="cb10" onclick="toggleComment(10)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
-    <span id="cs10" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
-  </div>
-  <div class="q-comment-area" id="ca10">
-    <div class="q-comment-saved" id="cd10"></div>
-    <textarea class="q-comment-input" id="ci10" placeholder="Komentarz do pytania 10... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
-    <div class="q-comment-actions">
-      <button class="q-save-btn" onclick="saveComment(10)">Zapisz</button>
-      <button class="q-clear-btn" onclick="clearComment(10)">Usuń</button>
-      <span class="q-hint">Ctrl+Enter = zapisz</span>
-    </div>
-  </div>
-</div>
-
-<div class="q">
-  <div class="q-head">
-    <div class="q-num b">11</div>
-    <div class="q-body">
-      <div class="q-title">Jaka jest prognozowana taryfa energii elektrycznej na 2029 rok — i czy koszty energii przy eskalacji cen zostały przetestowane?</div>
-      <div class="q-text">Analiza indeksuje koszty energii wyłącznie wskaźnikiem <strong>CPI (2,3%/rok)</strong>, podczas gdy ceny energii dla obiektów komunalnych mogą rosnąć 2–3× szybciej niż CPI (co potwierdziły lata 2021–2023). Przy wzroście taryfy o 30% ponad CPI koszt energii basenu rośnie z 1,28M do <strong>~1,67M zł/rok</strong> (+390 tys. zł). Czy analizowano scenariusz szokowego wzrostu energii?</div>
-    </div>
-  </div>
-  <div class="q-context"><span>Podstawa:</span> Tab. 5 ProPOLIS: ceny energii 2029–2032 = 2,0%/rok (CPI). Tab. 12: energia elektryczna basenu 2029 = 1 284 946 zł. Audyt: "samo oparcie indeksacji o CPI nie zamyka ryzyka kosztów energii".</div>
-
-  <div class="q-comment-bar">
-    <button class="q-comment-btn" id="cb11" onclick="toggleComment(11)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
-    <span id="cs11" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
-  </div>
-  <div class="q-comment-area" id="ca11">
-    <div class="q-comment-saved" id="cd11"></div>
-    <textarea class="q-comment-input" id="ci11" placeholder="Komentarz do pytania 11... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
-    <div class="q-comment-actions">
-      <button class="q-save-btn" onclick="saveComment(11)">Zapisz</button>
-      <button class="q-clear-btn" onclick="clearComment(11)">Usuń</button>
-      <span class="q-hint">Ctrl+Enter = zapisz</span>
-    </div>
-  </div>
-</div>
-
-</div><!-- /sec III -->
-
-<!-- ═══════════════════════════════
-     BLOK IV — CENTRUM SZTUK WALKI
-═══════════════════════════════ -->
-<div class="sec">
-<div class="sec-hdr">
-  <div class="sec-icon p">IV</div>
-  <div>
-    <div class="sec-title">Centrum Sztuk Walki i Squash — wymiary i założenia</div>
-    <div class="sec-sub">Pytania o przestrzeń, frekwencję i zasadność ekonomiczną</div>
-  </div>
-</div>
-
-<div class="alert r">
-  <div class="alert-icon">🔴</div>
-  <div>Kluczowy brak: w całym dokumencie ProPOLIS (104 strony) <strong>nie podano ani jednego wymiaru sali centrum sztuk walki ani kortów squash</strong> — ani m², ani wymiarów maty, ringu czy kortu. Analiza finansowa centrum sztuk walki zakłada 3 400 wejść w 2029 r. przy bilecie 132 zł — bez żadnego uzasadnienia popytu.</div>
-</div>
-
-<div class="q">
-  <div class="q-head">
-    <div class="q-num p">12</div>
-    <div class="q-body">
-      <div class="q-title">Jakie są dokładne wymiary sali centrum sztuk walki — ile m² maty tatami? Ile ringów / klatek?</div>
-      <div class="q-text">Analiza ProPOLIS nie zawiera żadnego opisu powierzchni centrum sztuk walki. Dla weryfikacji założeń finansowych konieczne jest podanie: <strong>całkowita powierzchnia sali (m²), liczba i wymiary mat tatami, ring bokserski (tak/nie), klatka MMA (tak/nie)</strong>. Federacje sportowe mają minimalne wymagania: mat tatami dla judo/jiu-jitsu — min. 14×14m (196 m²), ring bokserski — min. 7×7m w ringu + strefa bezpieczeństwa.</div>
-    </div>
-  </div>
-  <div class="q-context"><span>Podstawa:</span> Dok. ProPOLIS: brak jakichkolwiek wymiarów. Etat "koordynatora ds. ochrony obszaru wodnego (ratownik)" przypisany TYLKO do pływalni. Centrum sztuk walki: 1,2 etatu łącznie z kierownikiem i koordynatorem adm.</div>
-
-  <div class="q-comment-bar">
-    <button class="q-comment-btn" id="cb12" onclick="toggleComment(12)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
-    <span id="cs12" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
-  </div>
-  <div class="q-comment-area" id="ca12">
-    <div class="q-comment-saved" id="cd12"></div>
-    <textarea class="q-comment-input" id="ci12" placeholder="Komentarz do pytania 12... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
-    <div class="q-comment-actions">
-      <button class="q-save-btn" onclick="saveComment(12)">Zapisz</button>
-      <button class="q-clear-btn" onclick="clearComment(12)">Usuń</button>
-      <span class="q-hint">Ctrl+Enter = zapisz</span>
-    </div>
-  </div>
-</div>
-
-<div class="q">
-  <div class="q-head">
-    <div class="q-num p">13</div>
-    <div class="q-body">
-      <div class="q-title">Skąd pochodzi prognoza 3 400 wejść rocznie do centrum sztuk walki — i czy gmina ma podpisane porozumienia z klubami?</div>
-      <div class="q-text">Centrum sztuk walki zakłada <strong>3 400 wejść w 2029 r.</strong> przy cenie 132 zł/h. To zaledwie <strong>9,3 wejścia dziennie</strong> (rok = 365 dni). Czy gmina ma porozumienie z Akademią Judo, szkołami karate lub klubami MMA? Czy przeprowadzono ankiety zainteresowania? Dla porównania: Akademia Judo Poznań wyprowadziła się ze starego obiektu przy Olimpia — czy jest zainteresowana nową lokalizacją?</div>
-    </div>
-  </div>
-  <div class="q-context"><span>Podstawa:</span> Tab. 21 ProPOLIS: 3 400 wejść w 2029, 3 200 w 2030–2032. Cena ujednolicona 132 zł/h (2029). Przychody: 357 830 zł. Koszty: 261 761 zł. Wynik: +96 070 zł.</div>
-
-  <div class="q-comment-bar">
-    <button class="q-comment-btn" id="cb13" onclick="toggleComment(13)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
-    <span id="cs13" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
-  </div>
-  <div class="q-comment-area" id="ca13">
-    <div class="q-comment-saved" id="cd13"></div>
-    <textarea class="q-comment-input" id="ci13" placeholder="Komentarz do pytania 13... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
-    <div class="q-comment-actions">
-      <button class="q-save-btn" onclick="saveComment(13)">Zapisz</button>
-      <button class="q-clear-btn" onclick="clearComment(13)">Usuń</button>
-      <span class="q-hint">Ctrl+Enter = zapisz</span>
-    </div>
-  </div>
-</div>
-
-<div class="q">
-  <div class="q-head">
-    <div class="q-num p">14</div>
-    <div class="q-body">
-      <div class="q-title">Ile kortów squash jest planowanych i czy przychody zakładają wynajem dla zewnętrznych akademii czy tylko sprzedaż biletów?</div>
-      <div class="q-text">Squash zakłada <strong>6 000 wejść w 2029 r.</strong> przy 75 zł/h — to <strong>16,4 wejścia dziennie</strong>. Przy typowym korcie squash (ok. 62 m²) i godzinie gry dla 2 osób — to odpowiada ok. <strong>2 kortom pracującym 8h/dobę</strong>. Prosimy potwierdzić: ile kortów jest zaplanowanych? Czy gmina planuje wynajem kortów dla zewnętrznych akademii lub firm (np. abonament corporate)? Czy wejście 75 zł to cena dla 1 osoby czy za kort?</div>
-    </div>
-  </div>
-  <div class="q-context"><span>Podstawa:</span> Tab. 16 ProPOLIS: 6 000 wejść 2029. Tab. 15: cena ujednolicona 75 zł (2029). Tab. 19: przychody squash 359 584 zł, wynik +108 775 zł. Tendencja: wynik spada z +108K do +56K w 2032.</div>
-
-  <div class="q-comment-bar">
-    <button class="q-comment-btn" id="cb14" onclick="toggleComment(14)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
-    <span id="cs14" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
-  </div>
-  <div class="q-comment-area" id="ca14">
-    <div class="q-comment-saved" id="cd14"></div>
-    <textarea class="q-comment-input" id="ci14" placeholder="Komentarz do pytania 14... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
-    <div class="q-comment-actions">
-      <button class="q-save-btn" onclick="saveComment(14)">Zapisz</button>
-      <button class="q-clear-btn" onclick="clearComment(14)">Usuń</button>
-      <span class="q-hint">Ctrl+Enter = zapisz</span>
-    </div>
-  </div>
-</div>
-
-</div><!-- /sec IV -->
-
-<!-- ═══════════════════════════════
-     BLOK V — DOTACJE I CAPEX
-═══════════════════════════════ -->
-<div class="sec">
-<div class="sec-hdr">
-  <div class="sec-icon g">V</div>
-  <div>
-    <div class="sec-title">Dotacje i montaż finansowy — weryfikacja</div>
-    <div class="sec-sub">Pytania o potwierdzenie źródeł 26 mln zł dotacji</div>
-  </div>
-</div>
-
-<div class="q">
-  <div class="q-head">
-    <div class="q-num g">15</div>
-    <div class="q-body">
-      <div class="q-title">Czy gmina ma pisemne potwierdzenie kwalifikowalności z programu OLiOC (~6M zł)?</div>
-      <div class="q-text">Audyt zewnętrzny wykazał, że <strong>program OLiOC istnieje, ale limit ~6M zł "na inwestycję" nie wynika jednoznacznie z publicznych materiałów</strong>. Prosimy o przedstawienie dokumentu (pisemnej interpretacji Wielkopolskiego Urzędu Wojewódzkiego lub decyzji o kwalifikowalności), który potwierdza, że pływalnia z centrum sztuk walki kwalifikuje się do programu i w jakiej maksymalnej kwocie.</div>
-    </div>
-  </div>
-  <div class="q-context"><span>Podstawa:</span> Audyt zewnętrzny, punkt C10: "limit 6 mln zł na inwestycję nie wynika jednoznacznie z przytoczonych publicznych materiałów; brak wskazania dokumentu". Analiza ProPOLIS str. 24: "Program Ochrony Ludności i Obrony Cywilnej — ok. 6 000 000 zł".</div>
-
-  <div class="q-comment-bar">
-    <button class="q-comment-btn" id="cb15" onclick="toggleComment(15)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
-    <span id="cs15" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
-  </div>
-  <div class="q-comment-area" id="ca15">
-    <div class="q-comment-saved" id="cd15"></div>
-    <textarea class="q-comment-input" id="ci15" placeholder="Komentarz do pytania 15... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
-    <div class="q-comment-actions">
-      <button class="q-save-btn" onclick="saveComment(15)">Zapisz</button>
-      <button class="q-clear-btn" onclick="clearComment(15)">Usuń</button>
-      <span class="q-hint">Ctrl+Enter = zapisz</span>
-    </div>
-  </div>
-</div>
-
-<div class="q">
-  <div class="q-head">
-    <div class="q-num g">16</div>
-    <div class="q-body">
-      <div class="q-title">Czy pływalnia z centrum sztuk walki spełnia kryteria "dual use" wymagane przez FBiO/BGK?</div>
-      <div class="q-text">Fundusz Bezpieczeństwa i Obronności finansuje projekty z komponentem ochrony ludności. <strong>Kwalifikowalność pływalni jako "obiektu dual-use" (sport + ochrona ludności) wymaga wykazania funkcji schronu lub zbiorowego refugium</strong>. Czy projekt architektoniczny zawiera taki komponent? Czy przeprowadzono wstępne konsultacje z BGK lub MON w tym zakresie? Brak kwalifikowalności FBiO oznacza ryzyko nieotrzymania części planowanej dotacji 26M.</div>
-    </div>
-  </div>
-  <div class="q-context"><span>Podstawa:</span> Audyt zewnętrzny, punkt C11: "kwalifikowalność projektów typu pływalnia zależy od spełnienia kryteriów (ochrona ludności/dual use) — rekomendowane wstępne konsultacje". Analiza ProPOLIS str. 24: FBiO jako źródło bez podania warunków.</div>
-
-  <div class="q-comment-bar">
-    <button class="q-comment-btn" id="cb16" onclick="toggleComment(16)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
-    <span id="cs16" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
-  </div>
-  <div class="q-comment-area" id="ca16">
-    <div class="q-comment-saved" id="cd16"></div>
-    <textarea class="q-comment-input" id="ci16" placeholder="Komentarz do pytania 16... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
-    <div class="q-comment-actions">
-      <button class="q-save-btn" onclick="saveComment(16)">Zapisz</button>
-      <button class="q-clear-btn" onclick="clearComment(16)">Usuń</button>
-      <span class="q-hint">Ctrl+Enter = zapisz</span>
-    </div>
-  </div>
-</div>
-
-</div><!-- /sec V -->
-
-<!-- PODSUMOWANIE -->
-<div class="alert r" style="margin-top:8px">
-  <div class="alert-icon">📋</div>
-  <div><strong>Oczekiwane materiały od Burmistrza przed głosowaniem:</strong> (1) Aktualna WPF z kredytem 24M, dopłatą 2,14M/rok i kredytem Skałów 10M w 2027 — (2) Pisemne potwierdzenie kwalifikowalności OLiOC i FBiO — (3) Promesa kredytowa z potwierdzonym oprocentowaniem — (4) Projekt architektoniczny / PFU z wymiarami centrum sztuk walki, kortów squash i pomieszczeń technicznych — (5) Kosztorys energetyczny z dokumentacji budowlanej — (6) Analiza catchment / uzasadnienie frekwencji 147 000 wejść — <strong>(7) Analiza możliwości adaptacji pomieszczeń piwniczych basenu jako Miejsca Doraźnego Schronienia (MDS) zgodnie z ustawą z 5.12.2024 r.</strong></div>
-</div>
-
-
-<!-- ═══════════════════════════════
-     BLOK VI — MIEJSCE DORAŹNEGO SCHRONIENIA
-═══════════════════════════════ -->
-<div class="sec">
-<div class="sec-hdr">
-  <div class="sec-icon o">VI</div>
-  <div>
-    <div class="sec-title">Miejsce doraźnego schronienia — lekcje z Ukrainy</div>
-    <div class="sec-sub">Pytania o funkcję ochronną basenu · Ustawa o ochronie ludności i obronie cywilnej z 5.12.2024 · doświadczenia ukraińskie 2022–2026</div>
-  </div>
-</div>
-
-<div class="alert y" style="margin-bottom:18px">
-  <div class="alert-icon">🇺🇦</div>
-  <div><strong>Kontekst ukraiński:</strong> Od lutego 2022 r. ukraińskie miasta są atakowane rakietami i dronami wielokrotnie dziennie. Główna lekcja: <strong>schrony muszą być blisko, natychmiastowo dostępne i w pełni autonomiczne</strong>. Charków przygotował schrony dla 100 tys. osób w piwnicach, Kijów przerobi istniejące pomieszczenia. Ukraina uchwaliła ustawę nakazującą schrony w każdej nowej budowli. Polska ustawa o ochronie ludności z 5.12.2024 r. wprowadza pojęcie <strong>„miejsca doraźnego schronienia" (MDS)</strong> — to kategoria niższa niż schron, ale wymagająca spełnienia konkretnych parametrów. Obiekt sportowy o dużej kubaturze, z piwnicą techniczną, może być zarejestrowany jako MDS — ale tylko jeśli projekt to uwzględni.</div>
-</div>
-
-<div class="q">
-  <div class="q-head">
-    <div class="q-num o">17</div>
-    <div class="q-body">
-      <div class="q-title">Czy projekt basenu przewiduje funkcję miejsca doraźnego schronienia (MDS) zgodnie z ustawą z 5.12.2024 r.?</div>
-      <div class="q-text">Ustawa o ochronie ludności i obronie cywilnej (Dz.U. poz. 1907) definiuje <strong>miejsce doraźnego schronienia</strong> jako obiekt przystosowany do tymczasowego ukrycia ludzi w razie stanu nadzwyczajnego lub wojny. Pomieszczenia piwniczne basenu — maszynownia, filtrownia, zaplecze techniczne — mają potencjał adaptacyjny. Czy burmistrz zlecił analizę możliwości ujęcia tych pomieszczeń jako MDS już na etapie projektu? <strong>Adaptacja na etapie projektu kosztuje kilka tys. zł; adaptacja po zbudowaniu — kilkaset tys. zł.</strong></div>
-    </div>
-  </div>
-  <div class="q-context"><span>Podstawa:</span> Art. 83 ustawy z 5.12.2024 r. o OL i OC: MDS = obiekt budowlany przystosowany do tymczasowego ukrycia. Rozp. MSWiA 21.02.2025: kryteria uznawania za budowlę ochronną. Dotacja do 100% kosztów funkcji ochronnej (art. 106 ustawy).</div>
-
-  <div class="q-comment-bar">
-    <button class="q-comment-btn" id="cb17" onclick="toggleComment(17)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
-    <span id="cs17" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
-  </div>
-  <div class="q-comment-area" id="ca17">
-    <div class="q-comment-saved" id="cd17"></div>
-    <textarea class="q-comment-input" id="ci17" placeholder="Komentarz do pytania 17... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
-    <div class="q-comment-actions">
-      <button class="q-save-btn" onclick="saveComment(17)">Zapisz</button>
-      <button class="q-clear-btn" onclick="clearComment(17)">Usuń</button>
-      <span class="q-hint">Ctrl+Enter = zapisz</span>
-    </div>
-  </div>
-</div>
-
-<div class="q">
-  <div class="q-head">
-    <div class="q-num o">18</div>
-    <div class="q-body">
-      <div class="q-title">Ile osób może pomieścić piwniczny poziom techniczny basenu i czy spełnia wymóg dostępności w czasie &lt;2 minut?</div>
-      <div class="q-text">Lekcja nr 1 z Ukrainy: <strong>czas dotarcia do schronu to kwestia życia i śmierci</strong>. Ukraińskie służby alarmowe wymagają dotarcia do schronu w ciągu 2–3 minut od alarmu. Polska norma (wytyczne Szefa OC 2018): <strong>zalecana odległość do 150 m</strong>. Basen jest obiektem publicznym przy istniejącym stadionie i żłobku — to potencjalne naturalne centrum schronienia dla okolicznych mieszkańców. Ile metrów kwadratowych powierzchni piwnicznej przewiduje projekt? Przy normie 1 m²/osoba — ile osób może przyjąć? Czy wejście do poziomu technicznego może być niezależne od wejścia do hali basenowej?</div>
-    </div>
-  </div>
-  <div class="q-context"><span>Podstawa:</span> Wytyczne Szefa OC Kraju 2018: odległość do 150 m. Ukraina 2022–2024: doświadczenie — schrony przy przystankach autobusowych w Charkowie, bo ludzie nie zdążają dojść dalej. Polska ustawa: MDS jako adaptacja "garaży podziemnych, pomieszczeń budynków" do funkcji ochronnej.</div>
-
-  <div class="q-comment-bar">
-    <button class="q-comment-btn" id="cb18" onclick="toggleComment(18)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
-    <span id="cs18" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
-  </div>
-  <div class="q-comment-area" id="ca18">
-    <div class="q-comment-saved" id="cd18"></div>
-    <textarea class="q-comment-input" id="ci18" placeholder="Komentarz do pytania 18... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
-    <div class="q-comment-actions">
-      <button class="q-save-btn" onclick="saveComment(18)">Zapisz</button>
-      <button class="q-clear-btn" onclick="clearComment(18)">Usuń</button>
-      <span class="q-hint">Ctrl+Enter = zapisz</span>
-    </div>
-  </div>
-</div>
-
-<div class="q">
-  <div class="q-head">
-    <div class="q-num o">19</div>
-    <div class="q-body">
-      <div class="q-title">Czy projekt zawiera niezależne zasilanie awaryjne (agregat), własne zasoby wody i system wentylacji autonomicznej?</div>
-      <div class="q-text">Lekcja nr 2 z Ukrainy: <strong>infrastruktura krytyczna (prąd, woda, gaz) jest pierwszym celem ataków</strong>. W Kijowie i Charkowie schrony bez własnego zasilania stawały się pułapkami. Wymagania techniczne MDS obejmują: <strong>(a) niezależne zasilanie — agregat minimum 72h autonomii; (b) własne zasoby wody pitnej minimum 3 litry/osoba/dobę; (c) system wentylacji z możliwością przejścia w tryb izolacji</strong> (ochrona przed skażeniem chemicznym/biologicznym); (d) sanitariaty (choćby suche toalety). Czy projekt basenu uwzględnia te instalacje w części technicznej?</div>
-    </div>
-  </div>
-  <div class="q-context"><span>Podstawa:</span> Ukraina 2022–2026: główna przyczyna bezużyteczności schronów = brak autonomii energetycznej. Polska norma schronowa (Szef OC 2018): trzy okresy wentylacji — normalny, filtrowentylacja, pełna izolacja. Ustawa OL i OC art. 83: wymóg "rozwiązań służących przetrwaniu osób".</span></div>
-
-  <div class="q-comment-bar">
-    <button class="q-comment-btn" id="cb19" onclick="toggleComment(19)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
-    <span id="cs19" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
-  </div>
-  <div class="q-comment-area" id="ca19">
-    <div class="q-comment-saved" id="cd19"></div>
-    <textarea class="q-comment-input" id="ci19" placeholder="Komentarz do pytania 19... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
-    <div class="q-comment-actions">
-      <button class="q-save-btn" onclick="saveComment(19)">Zapisz</button>
-      <button class="q-clear-btn" onclick="clearComment(19)">Usuń</button>
-      <span class="q-hint">Ctrl+Enter = zapisz</span>
-    </div>
-  </div>
-</div>
-
-<div class="q">
-  <div class="q-head">
-    <div class="q-num o">20</div>
-    <div class="q-body">
-      <div class="q-title">Czy pomieszczenia techniczne basenu spełniają wymóg odporności na falę uderzeniową minimum kategorii U-1?</div>
-      <div class="q-text">Polskie rozporządzenie MSWiA z 21.02.2025 r. definiuje kategorie: <strong>U-1, U-2, U-3</strong> (ukrycia) oraz <strong>S-0, S-1, S-2, S-3</strong> (schrony). MDS nie musi być schronem — ale powinien co najmniej spełniać parametry ukrycia <strong>U-1</strong>, które chroni przed odłamkami i zagruzowaniem. Lekcja ukraińska: nawet proste ukrycia w piwnicach bloku ratowały życie przy ostrzale artyleryjskim, gdy naziemne części budynków tego nie zapewniały. Strop nad piwnicą techniczną basenu — ze względu na ciężar niecki basenowej — może naturalnie spełniać wymogi odporności. Czy architekt analizował ten potencjał?</div>
-    </div>
-  </div>
-  <div class="q-context"><span>Podstawa:</span> Rozp. MSWiA 21.02.2025: U-1 = ukrycie z funkcjami ochronnymi §2 ust. 2 pkt 1–3. Ukraina: "nawet proste ukrycia o małym stopniu osłonności zabezpieczające przed odłamkami mogą ochronić życie" (Przegląd Pożarniczy KGPSP). Producent schronów Hobbit House (certyfikat NATO): ściany min. 300 mm betonu zbrojonego = 500 kPa odporności.</div>
-
-  <div class="q-comment-bar">
-    <button class="q-comment-btn" id="cb20" onclick="toggleComment(20)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
-    <span id="cs20" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
-  </div>
-  <div class="q-comment-area" id="ca20">
-    <div class="q-comment-saved" id="cd20"></div>
-    <textarea class="q-comment-input" id="ci20" placeholder="Komentarz do pytania 20... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
-    <div class="q-comment-actions">
-      <button class="q-save-btn" onclick="saveComment(20)">Zapisz</button>
-      <button class="q-clear-btn" onclick="clearComment(20)">Usuń</button>
-      <span class="q-hint">Ctrl+Enter = zapisz</span>
-    </div>
-  </div>
-</div>
-
-<div class="q">
-  <div class="q-head">
-    <div class="q-num o">21</div>
-    <div class="q-body">
-      <div class="q-title">Czy projekt basenu jako "dual use" (sport + ochrona ludności) zwiększa szansę na dofinansowanie FBiO i OLiOC?</div>
-      <div class="q-text">Program OLiOC finansuje <strong>"obiekty zbiorowej ochrony"</strong> — pływalnia z funkcją MDS wpisuje się w tę kategorię. Fundusz Bezpieczeństwa i Obronności (FBiO/BGK) wymaga komponentu <strong>"dual use"</strong> — obrona cywilna + funkcja cywilna. Polska ustawa z art. 106 przewiduje <strong>dotację do 100% kosztów związanych z funkcją ochronną</strong>, w tym adaptacji garaży i piwnic. Jeśli projekt basenu będzie zawierał certyfikowany MDS — gmina może wnioskować o dodatkowe 1–3M zł dofinansowania wyłącznie na tę funkcję, niezależnie od dofinansowania sportowego. Czy burmistrz rozważał tę ścieżkę?</div>
-    </div>
-  </div>
-  <div class="q-context"><span>Podstawa:</span> Ustawa OL i OC art. 106: dotacja do 100% kosztów funkcji ochronnej. OLiOC nabór 2025–2026: "obiekty zbiorowej ochrony". FBiO: dual use = sport + ochrona ludności. Poseł Strach: "Nowe schrony powinny powstawać pod szkołami, stadionami, teatrami".</div>
-
-  <div class="q-comment-bar">
-    <button class="q-comment-btn" id="cb21" onclick="toggleComment(21)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
-    <span id="cs21" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
-  </div>
-  <div class="q-comment-area" id="ca21">
-    <div class="q-comment-saved" id="cd21"></div>
-    <textarea class="q-comment-input" id="ci21" placeholder="Komentarz do pytania 21... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
-    <div class="q-comment-actions">
-      <button class="q-save-btn" onclick="saveComment(21)">Zapisz</button>
-      <button class="q-clear-btn" onclick="clearComment(21)">Usuń</button>
-      <span class="q-hint">Ctrl+Enter = zapisz</span>
-    </div>
-  </div>
-</div>
-
-<div class="q">
-  <div class="q-head">
-    <div class="q-num o">22</div>
-    <div class="q-body">
-      <div class="q-title">Jaki jest plan ewakuacji i oznakowania drogi do poziomu technicznego basenu dla mieszkańców z okolicznych ulic?</div>
-      <div class="q-text">Lekcja nr 3 z Ukrainy: <strong>oznakowanie i znajomość lokalizacji schronu ratuje życie</strong>. W Kijowie każdy schron ma tablice z odległością i strzałkami widocznymi z 200m. Czas na dotarcie przy alarmie rakietowym: <strong>2–4 minuty</strong>. Czy projekt przewiduje niezależne wejście do poziomu technicznego z zewnątrz budynku (bez przechodzenia przez halę basenową)? Czy plan zagospodarowania terenu uwzględnia chodniki ewakuacyjne i oświetlenie awaryjne prowadzące do wejścia MDS? Czy gmina ma plan poinformowania mieszkańców o lokalizacji?</div>
-    </div>
-  </div>
-  <div class="q-context"><span>Podstawa:</span> Polska norma schronowa: "zalecana odległość do budowli ochronnej nie więcej niż 150 m od miejsca stałego przebywania". Ustawa OL i OC: burmistrz odpowiada za "planowanie zbiorowej ochrony ludności". Ukraina 2022: doświadczenie — brak oznakowania = ludzie szukają schronu 5–7 minut zamiast 2 minut.</div>
-
-  <div class="q-comment-bar">
-    <button class="q-comment-btn" id="cb22" onclick="toggleComment(22)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Dodaj komentarz</button>
-    <span id="cs22" style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;margin-left:auto"></span>
-  </div>
-  <div class="q-comment-area" id="ca22">
-    <div class="q-comment-saved" id="cd22"></div>
-    <textarea class="q-comment-input" id="ci22" placeholder="Komentarz do pytania 22... (np. odpowiedź Burmistrza, uwagi, decyzja komisji)"></textarea>
-    <div class="q-comment-actions">
-      <button class="q-save-btn" onclick="saveComment(22)">Zapisz</button>
-      <button class="q-clear-btn" onclick="clearComment(22)">Usuń</button>
-      <span class="q-hint">Ctrl+Enter = zapisz</span>
-    </div>
-  </div>
-</div>
-
-</div><!-- /sec VI -->
-
-<table class="dt" style="margin-top:24px">
   <thead>
-    <tr><th>Pytanie</th><th>Temat</th><th>Priorytet</th><th>Skutek braku odpowiedzi</th></tr>
+    <tr><th>Wskaźnik</th><th>Wartość</th><th>Odniesienie</th><th>Ocena</th></tr>
   </thead>
   <tbody>
-    <tr class="hl-r"><td class="num">1–4</td><td>Kredyt 24M — warunki i WPF</td><td class="red">🔴 Krytyczny</td><td>Nieznany rzeczywisty koszt obsługi długu</td></tr>
-    <tr class="hl-r"><td class="num">5–7</td><td>Wolna nadwyżka i ryzyka budżetu</td><td class="red">🔴 Krytyczny</td><td>Rada głosuje bez pełnego obrazu finansowego</td></tr>
-    <tr class="hl-r"><td class="num">8–11</td><td>Koszty eksploatacji — energia, OZE</td><td class="red">🔴 Krytyczny</td><td>Koszty niedoszacowane o 300–500 tys./rok</td></tr>
-    <tr class="hl-y"><td class="num">12–14</td><td>Centrum sztuk walki i squash</td><td class="amb">🟡 Ważny</td><td>Brak możliwości weryfikacji założeń popytu</td></tr>
-    <tr class="hl-y"><td class="num">15–16</td><td>Dotacje — kwalifikowalność OLiOC/FBiO</td><td class="amb">🟡 Ważny</td><td>Ryzyko nieotrzymania części 26M dotacji</td></tr>
-    <tr class="hl-r"><td class="num">17–22</td><td>Miejsce doraźnego schronienia (MDS)</td><td class="red">🔴 Krytyczny</td><td>Brak funkcji ochronnej = utrata dotacji OLiOC + FBiO + ryzyko życia mieszkańców</td></tr>
+    <tr class="hl-green"><td>Nadwyżka operacyjna</td><td class="num-green">16,71 mln zł</td><td>10,9% dochodów bieżących</td><td><span class="badge b-green">dobra</span></td></tr>
+    <tr><td>Pokrycie obsługi długu</td><td class="num-green">179%</td><td>min. wymagane 100%</td><td><span class="badge b-green">bezpieczne</span></td></tr>
+    <tr><td>IWZ (art. 243 uofp)</td><td>6,38%</td><td>limit ~14,74%</td><td><span class="badge b-green">rezerwa 8,36 pp</span></td></tr>
+    <tr><td>Dług / dochody ogółem</td><td>45,2%</td><td>próg ostrzegawczy 60%</td><td><span class="badge b-green">ok</span></td></tr>
+    <tr class="hl-amber"><td>PIT+CIT / dochody bieżące</td><td class="num-amber">81,8%</td><td>bardzo wysokie uzależnienie</td><td><span class="badge b-amber">ryzyko</span></td></tr>
+    <tr class="hl-red"><td>Deficyt budżetu 2026</td><td class="num-red">−25,13 mln zł</td><td>finans. kredyt + wolne środki</td><td><span class="badge b-amber">inwestycyjny</span></td></tr>
   </tbody>
 </table>
+</div>
 
+<div class="alert amber">
+  <div class="alert-ico">⚠</div>
+  <div><strong>81,8% dochodów bieżących pochodzi z PIT i CIT.</strong> Każdy 1% spadku zatrudnienia lub koniunktury = utrata ok. 1,24 mln zł rocznie. W kryzysie 2009 r. PIT gmin w Polsce spadł o 12%. Przy takim scenariuszu gmina przekracza próg krytyczny obsługi długu.</div>
+</div>
 
 </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     VIEW 4 — MAPA RYZYK
-══════════════════════════════════════════════ -->
-<div id="view-risks" class="view">
+<!-- ═══════════════════════════════════════════
+     WIDOK 2 — WPF
+════════════════════════════════════════════ -->
+<div id="v-wpf" class="view">
 
-<div class="cover">
-<div class="cover-inner">
-  <div class="cover-badge">Mapa ryzyk · synteza całości</div>
-  <h1>Kompleksowa ocena ryzyk<br><span>inwestycji MCS Kostrzyn</span></h1>
-  <div class="cover-sub">Synteza: budżet gminy · analiza ProPOLIS · audyt zewnętrzny · benchmarki · doświadczenia ukraińskie</div>
+<div class="hero">
+<div class="hero-inner">
+  <div class="hero-tag">Wieloletnia Prognoza Finansowa · projekt uchwały · 27.04.2026</div>
+  <h1>WPF Gminy Kostrzyn<br><em>2026–2042 — planowane zadłużenie</em></h1>
+  <div class="hero-sub">Horyzont 17 lat · spłaty do 2042 r. · art. 243 spełniony przez cały okres</div>
+  <div class="kpis">
+    <div class="kpi red-bg">
+      <div class="kpi-lbl">Nowe kredyty 2026</div>
+      <div class="kpi-val red">20,8 mln</div>
+      <div class="kpi-note">finansowanie deficytu</div>
+    </div>
+    <div class="kpi red-bg">
+      <div class="kpi-lbl">Nowe kredyty 2027</div>
+      <div class="kpi-val red">15,0 mln</div>
+      <div class="kpi-note">głównie Skałów</div>
+    </div>
+    <div class="kpi red-bg">
+      <div class="kpi-lbl">Nowe kredyty 2028</div>
+      <div class="kpi-val red">5,0 mln</div>
+      <div class="kpi-note">uzupełnienie</div>
+    </div>
+    <div class="kpi amber-bg">
+      <div class="kpi-lbl">Łącznie nowe kredyty</div>
+      <div class="kpi-val amber">40,8 mln</div>
+      <div class="kpi-note">w WPF bez basenu</div>
+    </div>
+    <div class="kpi amber-bg">
+      <div class="kpi-lbl">Dług koniec 2028 (est.)</div>
+      <div class="kpi-val amber">~108 mln</div>
+      <div class="kpi-note">po nowych + historycznych</div>
+    </div>
+    <div class="kpi blue-bg">
+      <div class="kpi-lbl">Łącznie spłaty 2026–2042</div>
+      <div class="kpi-val blue">108,8 mln</div>
+      <div class="kpi-note">hist. 70,3M + plan. 38,5M</div>
+    </div>
+  </div>
 </div>
 </div>
 
 <div class="main">
 
-<div class="risk-grid">
-  <div class="rk h"><div class="rk-lbl">Ryzyko krytyczne</div><div class="rk-title">Bufor finansowy 1,13M zł</div><div class="rk-desc">Wolna nadwyżka po kredycie i dopłacie. Przy Iran −3% gmina poniżej minimum. Skałów jeszcze prefinansuje 21,2M.</div><div class="rk-val">z 7,27M → 1,13M</div></div>
-  <div class="rk h"><div class="rk-lbl">Ryzyko krytyczne</div><div class="rk-title">Dopłata nieujęta w WPF</div><div class="rk-desc">2,14M zł/rok od 2029 musi być jawnie w WPF. Bez tego Rada głosuje bez pełnej wiedzy o 15-letnim koszcie operacyjnym.</div><div class="rk-val">~32M zł przez 15 lat</div></div>
-  <div class="rk h"><div class="rk-lbl">Ryzyko krytyczne</div><div class="rk-title">Gaz 0 zł — źródło ciepła</div><div class="rk-desc">Analiza ProPOLIS nie zawiera kosztów ogrzewania basenu. Pływalnie 25m zużywają 280–500 tys. zł/rok na ciepło.</div><div class="rk-val">brak OZE w dok.</div></div>
-  <div class="rk h"><div class="rk-lbl">Ryzyko krytyczne</div><div class="rk-title">CAPEX niezweryfikowany</div><div class="rk-desc">OLiOC 6M i FBiO bez pisemnego potwierdzenia kwalifikowalności. Każde 1M mniej dotacji = więcej kredytu.</div><div class="rk-val">6M niepotwierdzone</div></div>
-  <div class="rk m"><div class="rk-lbl">Ryzyko umiarkowane</div><div class="rk-title">Frekwencja zawyżona</div><div class="rk-desc">Plan 147 tys. bez strefy rekreacyjnej. Benchmarki: sportowe baseny 25m = 100–130 tys. Każde 10 tys. mniej = 214 tys. zł mniej.</div><div class="rk-val">−27 do −47 tys. wejść</div></div>
-  <div class="rk m"><div class="rk-lbl">Ryzyko umiarkowane</div><div class="rk-title">Wymiary sali sztuk walki</div><div class="rk-desc">W 104 stronach ProPOLIS brak jakiegokolwiek wymiaru sali. 3 400 wejść/rok = 9,3 wejść/dzień bez uzasadnienia popytu.</div><div class="rk-val">brak m² w analizie</div></div>
-  <div class="rk m"><div class="rk-lbl">Ryzyko umiarkowane</div><div class="rk-title">Skałów + basen jednocześnie</div><div class="rk-desc">Prefinansowanie oczyszczalni 21,2M z własnej gotówki + budowa basenu = dwa duże obciążenia płynnościowe w 2026–2028.</div><div class="rk-val">Skałów: 21,2M wkładu</div></div>
-  <div class="rk m"><div class="rk-lbl">Ryzyko umiarkowane</div><div class="rk-title">Brak MDS w projekcie</div><div class="rk-desc">Piwnice techniczne basenu mogą być zarejestrowane jako Miejsce Doraźnego Schronienia (ustawa 5.12.2024). Brak tej funkcji = utrata dodatkowego dofinansowania.</div><div class="rk-val">dotacja do 100% MDS</div></div>
-  <div class="rk l"><div class="rk-lbl">Ryzyko niskie</div><div class="rk-title">IWZ i limity ustawowe</div><div class="rk-desc">IWZ 7,38% po kredycie 24M — rezerwa 7,36 pp do limitu 14,74%. Dług/dochody 51,1% — poniżej średniej krajowej.</div><div class="rk-val">rezerwa 7,36 pp</div></div>
-  <div class="rk l"><div class="rk-lbl">Ryzyko niskie</div><div class="rk-title">Dokumentacja kadrowa</div><div class="rk-desc">Tabele płacowe (Tab. 6–9) dokładne, zgodne z GUS/RM. 34 etaty dobrze rozpisane. Kalkulacja ZFŚS, PPK i ubezpieczeń poprawna.</div><div class="rk-val">34 etaty · ok</div></div>
+<div class="section-hdr">
+  <span class="section-num">01</span>
+  <span class="section-title">Prognoza wieloletnia 2026–2035</span>
+  <span class="section-sub">mln zł · dane z załącznika nr 1 WPF</span>
 </div>
 
-<div class="card" style="margin-bottom:16px">
-  <div class="card-title">Macierz — prawdopodobieństwo vs skutek</div>
-  <div class="ch tall"><canvas id="cMatrix" role="img" aria-label="Macierz ryzyk — prawdopodobieństwo vs skutek finansowy">Ryzyka krytyczne: bufor finansowy, dopłata WPF, gaz 0, CAPEX. Ryzyka umiarkowane: frekwencja, sztuki walki, Skałów, MDS.</canvas></div>
+<div class="card">
+<div style="overflow-x:auto">
+<table class="tbl">
+  <thead>
+    <tr>
+      <th>Rok</th>
+      <th>Dochody</th>
+      <th>Wydatki</th>
+      <th>Wynik</th>
+      <th>Nadwyżka op.</th>
+      <th>Obsługa długu</th>
+      <th>Wolna nadwyżka</th>
+      <th>IWZ</th>
+      <th>Art. 243</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="hl-red"><td><strong>2026</strong> <span class="badge b-amber">zmiana</span></td><td>186,9</td><td>212,0</td><td class="num-red">−25,1</td><td class="num-green">16,7</td><td>4,85</td><td class="num-green">11,9</td><td>6,38%</td><td><span class="badge b-green">TAK</span></td></tr>
+    <tr class="hl-amber"><td><strong>2027</strong> <span class="badge b-red">kredyt 15M</span></td><td>166,0</td><td>175,2</td><td class="num-red">−9,2</td><td class="num-green">23,3</td><td>5,80</td><td class="num-green">17,5</td><td>6,88%</td><td><span class="badge b-green">TAK</span></td></tr>
+    <tr class="hl-amber"><td><strong>2028</strong> <span class="badge b-red">kredyt 5M</span></td><td>168,1</td><td>167,1</td><td class="num-green">+1,0</td><td class="num-green">23,5</td><td>6,00</td><td class="num-green">17,5</td><td>7,13%</td><td><span class="badge b-green">TAK</span></td></tr>
+    <tr><td><strong>2029</strong></td><td>163,4</td><td>156,8</td><td class="num-green">+6,6</td><td class="num-green">23,9</td><td>6,60</td><td class="num-green">17,3</td><td>7,13%</td><td><span class="badge b-green">TAK</span></td></tr>
+    <tr><td><strong>2030</strong></td><td>167,8</td><td>161,0</td><td class="num-green">+6,9</td><td class="num-green">25,0</td><td>6,85</td><td class="num-green">18,1</td><td>6,91%</td><td><span class="badge b-green">TAK</span></td></tr>
+    <tr><td><strong>2031</strong></td><td>172,0</td><td>165,8</td><td class="num-green">+6,2</td><td class="num-green">25,8</td><td>6,23</td><td class="num-green">19,6</td><td>6,18%</td><td><span class="badge b-green">TAK</span></td></tr>
+    <tr><td><strong>2032</strong></td><td>176,0</td><td>169,7</td><td class="num-green">+6,3</td><td class="num-green">26,4</td><td>6,25</td><td class="num-green">20,1</td><td>5,88%</td><td><span class="badge b-green">TAK</span></td></tr>
+    <tr><td><strong>2033</strong></td><td>179,5</td><td>172,3</td><td class="num-green">+7,2</td><td class="num-green">26,5</td><td>7,15</td><td class="num-green">19,3</td><td>6,11%</td><td><span class="badge b-green">TAK</span></td></tr>
+    <tr><td><strong>2034</strong></td><td>183,1</td><td>175,7</td><td class="num-green">+7,4</td><td class="num-green">26,6</td><td>7,35</td><td class="num-green">19,3</td><td>5,92%</td><td><span class="badge b-green">TAK</span></td></tr>
+    <tr><td><strong>2035</strong></td><td>186,7</td><td>179,4</td><td class="num-green">+7,4</td><td class="num-green">26,8</td><td>7,35</td><td class="num-green">19,4</td><td>5,62%</td><td><span class="badge b-green">TAK</span></td></tr>
+  </tbody>
+</table>
+</div>
 </div>
 
-<div class="alert r">
-  <div class="alert-icon">📋</div>
-  <div><strong>Materiały wymagane przed głosowaniem:</strong> (1) WPF z kredytem 24M + dopłatą 2,14M/rok + kredytem Skałów 10M w 2027 — (2) Pisemna kwalifikowalność OLiOC i FBiO — (3) Promesa kredytowa z oprocentowaniem — (4) PFU z wymiarami sali sztuk walki i kortów squash — (5) Kosztorys energetyczny z projektu budowlanego — (6) Analiza MDS dla pomieszczeń piwniczych basenu</div>
+<div class="section-hdr">
+  <span class="section-num">02</span>
+  <span class="section-title">Planowane nowe zadłużenie</span>
+</div>
+
+<div class="g2">
+<div class="card accent-red">
+  <div class="card-title">Kredyty zaplanowane w WPF</div>
+  <div class="wf">
+    <div class="wf-row"><div class="wf-lbl">2026 — deficyt + inwestycje</div><div class="wf-bar-wrap"><div class="wf-bar" style="width:100%;background:#f0c4be;color:var(--red)">20,8 mln zł</div></div></div>
+    <div class="wf-row"><div class="wf-lbl">2027 — głównie Skałów</div><div class="wf-bar-wrap"><div class="wf-bar" style="width:72%;background:#f0c4be;color:var(--red)">15,0 mln zł</div></div></div>
+    <div class="wf-row"><div class="wf-lbl">2028 — uzupełnienie</div><div class="wf-bar-wrap"><div class="wf-bar" style="width:24%;background:#f0c4be;color:var(--red)">5,0 mln zł</div></div></div>
+    <div class="wf-row" style="border-top:1px solid var(--line);margin-top:4px;padding-top:6px"><div class="wf-lbl" style="font-weight:500">Łącznie w WPF</div><div class="wf-bar-wrap"><div class="wf-bar" style="width:100%;background:var(--red);color:white;font-weight:500">40,8 mln zł</div></div></div>
+    <div class="wf-row" style="margin-top:4px"><div class="wf-lbl">+ Kredyt basen (poza WPF)</div><div class="wf-bar-wrap"><div class="wf-bar" style="width:49%;background:#f5dcd9;color:var(--red)">+ 20 mln zł</div></div></div>
+    <div class="wf-row" style="border-top:1px solid var(--line);margin-top:4px;padding-top:6px"><div class="wf-lbl" style="font-weight:500;color:var(--red)">Łącznie z basenem</div><div class="wf-bar-wrap"><div class="wf-bar" style="width:100%;background:#8b1a10;color:white;font-weight:500">60,8 mln zł</div></div></div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-title">Obsługa długu 2026–2035 (mln zł)</div>
+  <div class="ch" style="height:220px"><canvas id="cObsluga" role="img" aria-label="Obsługa długu historyczna i planowana 2026-2035">Roczna obsługa długu od 4,85 mln w 2026 do 7,35 mln w 2035.</canvas></div>
+</div>
+</div>
+
+<div class="alert red">
+  <div class="alert-ico">!</div>
+  <div><strong>Dług gminy wzrośnie o ponad 50% w ciągu 3 lat.</strong> Dług na koniec 2025: 83,95 mln zł. Po kredytach z WPF i basenu: ok. 128 mln zł. Mimo to IWZ pozostaje w bezpiecznym przedziale — ale wolna nadwyżka zostanie poważnie ograniczona.</div>
+</div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     WIDOK 3 — KREDYT NA BASEN
+════════════════════════════════════════════ -->
+<div id="v-basen" class="view">
+
+<div class="hero">
+<div class="hero-inner">
+  <div class="hero-tag">Inwestycja MCS — Miejskie Centrum Sportu · szacunek 27.04.2026</div>
+  <h1>Kredyt na basen<br><em>wpływ na budżet 2027–2041</em></h1>
+  <div class="hero-sub">CAPEX 46 mln zł · dotacja 26 mln · kredyt 20 mln · 15 lat · 3%</div>
+  <div class="kpis">
+    <div class="kpi blue-bg">
+      <div class="kpi-lbl">CAPEX inwestycji</div>
+      <div class="kpi-val blue">46 mln zł</div>
+      <div class="kpi-note">basen + sauna + strefa walk</div>
+    </div>
+    <div class="kpi green-bg">
+      <div class="kpi-lbl">Dotacja (plan)</div>
+      <div class="kpi-val green">26 mln zł</div>
+      <div class="kpi-note">MSiT 15M + OLiOC 6M + FBiO ?</div>
+    </div>
+    <div class="kpi red-bg">
+      <div class="kpi-lbl">Kredyt gminy</div>
+      <div class="kpi-val red">20 mln zł</div>
+      <div class="kpi-note">różnica CAPEX − dotacja</div>
+    </div>
+    <div class="kpi amber-bg">
+      <div class="kpi-lbl">Rata roczna (3%)</div>
+      <div class="kpi-val amber">1,68 mln</div>
+      <div class="kpi-note">140 tys. zł / miesiąc</div>
+    </div>
+    <div class="kpi red-bg">
+      <div class="kpi-lbl">Odsetki łącznie</div>
+      <div class="kpi-val red">5,13 mln</div>
+      <div class="kpi-note">przez 15 lat spłaty</div>
+    </div>
+    <div class="kpi red-bg">
+      <div class="kpi-lbl">Koszt całkowity kredytu</div>
+      <div class="kpi-val red">25,13 mln</div>
+      <div class="kpi-note">pożyczamy 20M, oddajemy 25M</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="main">
+
+<div class="section-hdr">
+  <span class="section-num">01</span>
+  <span class="section-title">Wpływ na wolną nadwyżkę</span>
+</div>
+
+<div class="card">
+  <div class="card-title">Wolna nadwyżka — krok po kroku</div>
+  <div class="wf">
+    <div class="wf-row"><div class="wf-lbl">Nadwyżka operacyjna</div><div class="wf-bar-wrap"><div class="wf-bar" style="width:100%;background:#c0dfcf;color:#1a5234">+16,71 mln zł</div></div></div>
+    <div class="wf-row"><div class="wf-lbl">− Obsługa istniejącego długu</div><div class="wf-bar-wrap"><div class="wf-bar" style="width:55%;background:#f5dcd9;color:var(--red)">−9,17 mln zł</div></div></div>
+    <div class="wf-row" style="border-top:1px dashed var(--line);padding-top:4px"><div class="wf-lbl" style="font-weight:500">= Wolna nadwyżka DZIŚ</div><div class="wf-bar-wrap"><div class="wf-bar" style="width:45%;background:#1e4d8c;color:white">7,54 mln zł</div></div></div>
+    <div class="wf-row" style="margin-top:8px"><div class="wf-lbl">− Rata kredytu basen</div><div class="wf-bar-wrap"><div class="wf-bar" style="width:10%;background:#f5dcd9;color:var(--red)">−1,68 mln</div></div></div>
+    <div class="wf-row" style="border-top:1px dashed var(--line);padding-top:4px"><div class="wf-lbl" style="font-weight:500">= Po kredycie</div><div class="wf-bar-wrap"><div class="wf-bar" style="width:35%;background:#2e6da0;color:white">5,86 mln zł</div></div></div>
+    <div class="wf-row" style="margin-top:8px"><div class="wf-lbl">− Dopłata do basenu (od 2029)</div><div class="wf-bar-wrap"><div class="wf-bar" style="width:13%;background:#f5dcd9;color:var(--red)">−2,14 mln</div></div></div>
+    <div class="wf-row" style="border-top:1px solid var(--line);padding-top:4px"><div class="wf-lbl" style="font-weight:500;color:var(--amber)">= Wolna nadwyżka 2029+</div><div class="wf-bar-wrap"><div class="wf-bar" style="width:22%;background:var(--amber);color:white">3,72 mln zł</div></div></div>
+    <div class="wf-row" style="margin-top:12px;background:var(--red-light);border-radius:6px;padding:8px"><div class="wf-lbl" style="color:var(--red)">⚠ Scenariusz Iran −3% PIT</div><div class="wf-bar-wrap"><div class="wf-bar" style="width:100%;background:var(--red-light);border:1px solid #f0c4be;color:var(--red)">wolna nadwyżka: −0,46 mln zł (deficyt!)</div></div></div>
+  </div>
+</div>
+
+<div class="g2">
+<div class="card">
+  <div class="card-title">Scenariusze — wolna nadwyżka 2029</div>
+  <div class="ch" style="height:220px"><canvas id="cScenariusze" role="img" aria-label="Wolna nadwyżka w różnych scenariuszach 2029">Baseline 3,72M, Iran -3% -0,46M, Iran -6% -4,17M, Oprocentowanie 5.5% zamiast 3% 2,04M.</canvas></div>
+</div>
+<div class="card">
+  <div class="card-title">Koszt na mieszkańca (19 787 os.)</div>
+  <table class="tbl">
+    <thead><tr><th>Pozycja</th><th>Rocznie</th><th>15 lat</th></tr></thead>
+    <tbody>
+      <tr><td>Rata kredytu</td><td class="num-amber">85 zł</td><td class="num-red">1 277 zł</td></tr>
+      <tr><td>Dopłata operacyjna</td><td class="num-amber">108 zł</td><td class="num-red">1 622 zł</td></tr>
+      <tr class="hl-red"><td><strong>ŁĄCZNIE</strong></td><td class="num-red"><strong>193 zł</strong></td><td class="num-red"><strong>2 899 zł</strong></td></tr>
+    </tbody>
+  </table>
+  <div style="margin-top:1rem;font-size:12px;color:var(--ink3);line-height:1.6">
+    Niezależnie od tego, czy mieszkaniec skorzysta z basenu choć raz.
+  </div>
+</div>
+</div>
+
+<div class="section-hdr">
+  <span class="section-num">02</span>
+  <span class="section-title">Ryzyko analizy ProPOLIS</span>
+</div>
+
+<div class="g3">
+<div class="card accent-red">
+  <div class="card-title">Gaz = 0 zł przez 4 lata</div>
+  <div style="font-size:13px;color:var(--ink2);line-height:1.6">Koszty ogrzewania basenu (280–500 tys. zł/rok) nie zostały uwzględnione. Brak wyjaśnienia źródła ciepła na 104 stronach dokumentu.</div>
+</div>
+<div class="card accent-amber">
+  <div class="card-title">Squash i bowling wliczone</div>
+  <div style="font-size:13px;color:var(--ink2);line-height:1.6">Przychody squash (+360 tys.) i "bowling" (+358 tys.) wliczone do bilansu MCS, choć Burmistrz potwierdził że to osobne budynki poza inwestycją 46M.</div>
+</div>
+<div class="card accent-red">
+  <div class="card-title">Frekwencja 147 tys. bez rekreacji</div>
+  <div style="font-size:13px;color:var(--ink2);line-height:1.6">Podobne baseny sportowe (bez zjeżdżalni/jacuzzi) stabilizują się na 100–130 tys. wejść. Każde −10 tys. = −214 tys. zł przychodów rocznie.</div>
+</div>
+</div>
+
+<div class="alert red">
+  <div class="alert-ico">!</div>
+  <div><strong>Po wyłączeniu squasha i bowlingu z bilansu MCS</strong> — realny deficyt operacyjny basenu od 2029 to ok. 2,3 mln zł rocznie, nie symboliczny zysk +51 895 zł wykazany w analizie ProPOLIS. Rada głosuje na podstawie nieaktualnej analizy.</div>
+</div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     WIDOK 4 — STANOWISKO RADNEGO
+════════════════════════════════════════════ -->
+<div id="v-stanowisko" class="view">
+
+<div class="hero">
+<div class="hero-inner">
+  <div class="hero-tag">Komisja Budżetu · sesja XXVII · stanowisko radnego</div>
+  <h1>Pływalnia — <em>tak,<br>ale nie teraz</em></h1>
+  <div class="hero-sub">Stanowisko uzasadnione danymi z WPF, budżetu i analiz porównawczych</div>
+</div>
+</div>
+
+<div class="main">
+
+<div class="section-hdr">
+  <span class="section-num">01</span>
+  <span class="section-title">Dlaczego tak — ale nie teraz</span>
+</div>
+
+<div class="quote">
+  Jestem za budową pływalni — ale w momencie, kiedy domkniemy modernizację Rynku i ulic, oczyszczalnię w Skałowie, i wyjaśnimy nasz udział przy wiadukcie spinającym obwodnicę. Wolę robić to wolniej, krok po kroku, solidnie — niż szybko i źle.
+  <span class="quote-src">— stanowisko radnego na Komisję Budżetu, 27.04.2026</span>
+</div>
+
+<div class="g3">
+<div class="card accent-red">
+  <div class="card-title">Obciążenie nr 1 — Skałów</div>
+  <div style="font-size:13px;color:var(--ink2);line-height:1.6">Prefinansowanie oczyszczalni: <strong>21,2 mln zł</strong> z własnej gotówki. Środki unijne (13,28 mln) wpłyną dopiero w 2027–2028. W 2027 planowany dodatkowy kredyt 15 mln zł.</div>
+</div>
+<div class="card accent-amber">
+  <div class="card-title">Obciążenie nr 2 — Wiadukt / obwodnica</div>
+  <div style="font-size:13px;color:var(--ink2);line-height:1.6">Udział gminy przy budowie wiaduktu spinającego obwodnicę Kostrzyna. Kwota udziału i harmonogram do wyjaśnienia — kolejne zobowiązanie w tym samym oknie czasowym.</div>
+</div>
+<div class="card accent-amber">
+  <div class="card-title">Obciążenie nr 3 — Rynek i ulice</div>
+  <div style="font-size:13px;color:var(--ink2);line-height:1.6">Modernizacja Rynku i ulic przyległych — inwestycja w toku. Drogi i infrastruktura tworzą podwaliny atrakcyjności gminy i wzrostu dochodów PIT/CIT.</div>
+</div>
+</div>
+
+<div class="section-hdr">
+  <span class="section-num">02</span>
+  <span class="section-title">Trzy równoległe kredyty w 3 lata</span>
+</div>
+
+<div class="card">
+<table class="tbl">
+  <thead><tr><th>Zobowiązanie</th><th>Kwota</th><th>Rok</th><th>Status</th></tr></thead>
+  <tbody>
+    <tr class="hl-red"><td>Kredyty z WPF 2026 (deficyt + inwestycje)</td><td class="num-red">20,80 mln zł</td><td>2026</td><td><span class="badge b-red">w WPF</span></td></tr>
+    <tr class="hl-red"><td>Kredyt Skałów 2027</td><td class="num-red">15,00 mln zł</td><td>2027</td><td><span class="badge b-red">w WPF</span></td></tr>
+    <tr class="hl-red"><td>Kredyty 2028 (uzupełnienie)</td><td class="num-red">5,00 mln zł</td><td>2028</td><td><span class="badge b-red">w WPF</span></td></tr>
+    <tr style="border-top:2px solid var(--line)"><td style="font-weight:500">Łącznie w WPF</td><td class="num-red" style="font-weight:500">40,80 mln zł</td><td>2026–2028</td><td><span class="badge b-red">zaplanowane</span></td></tr>
+    <tr class="hl-amber"><td>+ Kredyt na basen (poza WPF)</td><td class="num-amber">20,00 mln zł</td><td>2026–2028</td><td><span class="badge b-amber">projektowany</span></td></tr>
+    <tr class="hl-red" style="border-top:2px solid var(--red)"><td style="font-weight:500;color:var(--red)">ŁĄCZNIE nowe zadłużenie</td><td class="num-red" style="font-weight:500">60,80 mln zł</td><td>3 lata</td><td><span class="badge b-red">+72% do obecnego długu</span></td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="section-hdr">
+  <span class="section-num">03</span>
+  <span class="section-title">Propozycja — harmonogram działań</span>
+</div>
+
+<div class="g3">
+<div class="card accent-green" style="border-left-color:#2e7d52">
+  <div class="card-title" style="color:var(--green)">2026–2027</div>
+  <div style="font-family:var(--serif);font-size:1.05rem;margin-bottom:.5rem">Domknąć zobowiązania</div>
+  <div style="font-size:12px;color:var(--ink3);line-height:1.6">Oczyszczalnia Skałów · Rynek i ulice · wyjaśnienie udziału w wiadukcie · stabilizacja budżetu</div>
+</div>
+<div class="card accent-amber">
+  <div class="card-title" style="color:var(--amber)">2027–2028</div>
+  <div style="font-family:var(--serif);font-size:1.05rem;margin-bottom:.5rem">Przygotować porządnie</div>
+  <div style="font-size:12px;color:var(--ink3);line-height:1.6">Nowa analiza frekwencji · potwierdzone dotacje pisemnie · promesa kredytowa · projekt z funkcją MDS · weryfikacja kosztów energii</div>
+</div>
+<div class="card accent-green" style="border-left-color:#2e7d52">
+  <div class="card-title" style="color:var(--green)">2028–2029</div>
+  <div style="font-family:var(--serif);font-size:1.05rem;margin-bottom:.5rem">Podjąć decyzję</div>
+  <div style="font-size:12px;color:var(--ink3);line-height:1.6">Kompletna dokumentacja · zaktualizowany WPF · pełna Rada z jasnym obrazem 15-letniego kosztu operacyjnego</div>
+</div>
+</div>
+
+<div class="quote" style="margin-top:1rem">
+  Nie znam publicznych pływalni, które są rentowne.
+  <span class="quote-src">— dyrektor Krytej Pływalni w Starachowicach (2019)</span>
+</div>
+
+<div class="alert amber">
+  <div class="alert-ico">⚠</div>
+  <div><strong>Basen wybudowany za 1–2 lata, solidnie</strong> — z potwierdzonymi dotacjami, rzetelnym kosztorysem energetycznym i realną prognozą frekwencji — będzie służył gminie przez 30–40 lat. Basen wybudowany dziś, w pośpiechu i na podstawie niekompletnej analizy, będzie przez te 30 lat kosztował więcej niż musi.</div>
 </div>
 
 </div>
@@ -1123,193 +774,62 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-function show(id) {
+function show(id, btn) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('view-'+id).classList.add('active');
-  event.target.classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('v-'+id).classList.add('active');
+  btn.classList.add('active');
 }
 
-Chart.defaults.font.family = "'DM Mono', monospace";
-Chart.defaults.color = '#8896a8';
-
-// SCENARIO CHART
-new Chart(document.getElementById('cScen'), {
-  type: 'bar',
-  data: {
-    labels: ['2026 bez basenu','2027 kredyt 24M','2029 +dopłata','Iran −3%','Iran −6%'],
-    datasets: [{
-      label: 'Wolna nadwyżka (mln zł)',
-      data: [7.27, 5.27, 1.13, -2.59, -6.32],
-      backgroundColor: ['#16a34a','#d97706','#dc2626','#991b1b','#7f1d1d'],
-      borderRadius: 5, borderWidth: 0
-    }]
+const PL = {
+  plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ' ' + c.parsed.y.toLocaleString('pl-PL') + ' mln' } } },
+  scales: {
+    x: { grid: { display: false }, ticks: { color: '#7a7570', font: { family: "'DM Mono'" } } },
+    y: { grid: { color: 'rgba(0,0,0,.06)' }, ticks: { color: '#7a7570', font: { family: "'DM Mono'" }, callback: v => v + 'M' } }
   },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
-    scales: {
-      x: { grid: { display: false }, ticks: { font: { size: 10 } } },
-      y: { grid: { color: 'rgba(0,0,0,.06)' }, ticks: { callback: v => v + 'M', font: { size: 10 } }, min: -8 }
-    }
-  }
-});
+  responsive: true, maintainAspectRatio: false
+};
 
-// MONTAZ DONUT
-new Chart(document.getElementById('cMontaz'), {
+new Chart(document.getElementById('cDochody'), {
   type: 'doughnut',
   data: {
-    labels: ['Dotacja (OLiOC+FBiO+MSiT)', 'Kredyt gminy 24M'],
-    datasets: [{ data: [26, 24], backgroundColor: ['#16a34a','#2563eb'], borderWidth: 0, hoverOffset: 6, cutout: '60%' }]
+    labels: ['PIT (87,7M)','CIT (10,4M)','Podatek od nier. (19,6M)','Dotacje bieżące (9,0M)','Pozostałe (25,8M)'],
+    datasets: [{ data: [87.7, 10.4, 19.6, 9.0, 25.8],
+      backgroundColor: ['#1e4d8c','#4a7ec0','#7aa8d8','#b0cce8','#ddd8d0'],
+      borderWidth: 0, hoverOffset: 8 }]
   },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: {
-      legend: { position: 'bottom', labels: { font: { size: 10 }, padding: 12 } },
-      tooltip: { callbacks: { label: ctx => ' ' + ctx.label + ': ' + ctx.parsed + 'M zł' } }
-    }
+  options: { responsive: true, maintainAspectRatio: false, cutout: '58%',
+    plugins: { legend: { position: 'right', labels: { font: { family: "'DM Mono'", size: 10 }, color: '#7a7570', padding: 10 } } }
   }
 });
 
-// BENCHMARK BAR
-new Chart(document.getElementById('cBench'), {
+new Chart(document.getElementById('cObsluga'), {
   type: 'bar',
   data: {
-    labels: ['Michałowo','Starachowice','Nakło','Bocheń','KOSTRZYN (plan)','Trzebinia','Wadowice','Proszowice','Kępno'],
-    datasets: [{
-      data: [36, 100, 110, 132, 147, 150, 170, 181, 183],
-      backgroundColor: ['#888780','#d97706','#d97706','#16a34a','#2563eb','#16a34a','#16a34a','#16a34a','#16a34a'],
-      borderRadius: 5, borderWidth: 0
-    }]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + ctx.parsed.y + ' tys. wejść' } } },
-    scales: {
-      x: { grid: { display: false }, ticks: { font: { size: 9 } } },
-      y: { grid: { color: 'rgba(0,0,0,.06)' }, ticks: { callback: v => v + ' tys.', font: { size: 10 } }, min: 0, max: 210 }
-    }
-  }
-});
-
-// RISK MATRIX BUBBLE
-new Chart(document.getElementById('cMatrix'), {
-  type: 'bubble',
-  data: {
+    labels: ['2026','2027','2028','2029','2030','2031','2032','2033','2034','2035'],
     datasets: [
-      {
-        label: 'Ryzyko krytyczne',
-        data: [
-          {x: 8, y: 9, r: 16, label: 'Bufor 1,13M'},
-          {x: 7, y: 8, r: 14, label: 'Dopłata WPF'},
-          {x: 6, y: 7, r: 13, label: 'Gaz 0 zł'},
-          {x: 5, y: 8, r: 12, label: 'CAPEX niezwer.'},
-        ],
-        backgroundColor: 'rgba(220,38,38,0.7)', borderColor: '#dc2626', borderWidth: 1
-      },
-      {
-        label: 'Ryzyko umiarkowane',
-        data: [
-          {x: 7, y: 5, r: 12, label: 'Frekwencja'},
-          {x: 4, y: 5, r: 10, label: 'Sztuki walki'},
-          {x: 5, y: 6, r: 11, label: 'Skałów+basen'},
-          {x: 4, y: 4, r: 9, label: 'Brak MDS'},
-        ],
-        backgroundColor: 'rgba(217,119,6,0.7)', borderColor: '#d97706', borderWidth: 1
-      },
-      {
-        label: 'Ryzyko niskie',
-        data: [
-          {x: 3, y: 3, r: 9, label: 'IWZ limity'},
-          {x: 2, y: 2, r: 7, label: 'Kadry ok'},
-        ],
-        backgroundColor: 'rgba(22,163,74,0.7)', borderColor: '#16a34a', borderWidth: 1
-      }
+      { label: 'Historyczne', data: [4.85,5.15,5.15,5.15,5.20,4.575,4.575,4.475,4.675,4.675], backgroundColor: '#ddd8d0', borderRadius: 3, borderWidth: 0 },
+      { label: 'Planowane nowe', data: [0,0.65,0.85,1.45,1.65,1.65,1.675,2.675,2.675,2.675], backgroundColor: '#f0c4be', borderRadius: 3, borderWidth: 0 }
     ]
   },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: {
-      legend: { position: 'top', labels: { font: { size: 10 }, padding: 12 } },
-      tooltip: { callbacks: { label: ctx => ctx.raw.label + ' (prawdop: ' + ctx.raw.x + '/10 · skutek: ' + ctx.raw.y + '/10)' } }
-    },
-    scales: {
-      x: { min: 0, max: 10, title: { display: true, text: 'Prawdopodobieństwo →', font: { size: 10 } }, grid: { color: 'rgba(0,0,0,.06)' }, ticks: { font: { size: 10 } } },
-      y: { min: 0, max: 10, title: { display: true, text: 'Skutek finansowy →', font: { size: 10 } }, grid: { color: 'rgba(0,0,0,.06)' }, ticks: { font: { size: 10 } } }
-    }
-  }
+  options: { ...PL, scales: { ...PL.scales, x: { ...PL.scales.x, stacked: true }, y: { ...PL.scales.y, stacked: true } },
+    plugins: { legend: { display: true, position: 'top', labels: { font: { family: "'DM Mono'", size: 10 }, color: '#7a7570', boxWidth: 12, padding: 12 } },
+      tooltip: { callbacks: { label: c => c.dataset.label + ': ' + c.parsed.y.toFixed(2) + 'M' } } } }
 });
 
-var CK = 'mcs_q_comments_v1';
-function loadC(){ try{return JSON.parse(localStorage.getItem(CK)||'{}')}catch(e){return {}} }
-function saveC(o){ try{localStorage.setItem(CK,JSON.stringify(o))}catch(e){} }
-
-function toggleComment(n){
-  var a=document.getElementById('ca'+n);
-  var open=a.classList.contains('open');
-  a.classList.toggle('open',!open);
-  if(!open){ var ci=document.getElementById('ci'+n); var c=loadC(); if(c[n])ci.value=c[n]; ci.focus(); }
-}
-
-function saveComment(n){
-  var v=document.getElementById('ci'+n).value.trim();
-  var c=loadC();
-  if(v){c[n]=v;}else{delete c[n];}
-  saveC(c); renderQ(n);
-  document.getElementById('ca'+n).classList.remove('open');
-}
-
-function clearComment(n){
-  document.getElementById('ci'+n).value='';
-  var c=loadC(); delete c[n]; saveC(c); renderQ(n);
-  document.getElementById('ca'+n).classList.remove('open');
-}
-
-function renderQ(n){
-  var c=loadC(); var txt=c[n]||'';
-  var btn=document.getElementById('cb'+n);
-  var cd=document.getElementById('cd'+n);
-  var cs=document.getElementById('cs'+n);
-  if(!btn)return;
-  var iconAdd='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>';
-  var iconOk='<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>';
-  if(txt){
-    btn.classList.add('has-comment');
-    btn.innerHTML=iconOk+' Komentarz zapisany';
-    cd.textContent=txt; cd.classList.add('vis');
-    cs.textContent='zapisano '+new Date().toLocaleDateString('pl-PL');
-  } else {
-    btn.classList.remove('has-comment');
-    btn.innerHTML=iconAdd+' Dodaj komentarz';
-    cd.classList.remove('vis'); cs.textContent='';
-  }
-  updateBadge();
-}
-
-function updateBadge(){
-  var c=loadC(); var n=Object.keys(c).length;
-  var b=document.getElementById('sumbadge');
-  if(!b)return;
-  if(n>0){b.textContent=n+' kom.';b.style.display='inline-flex';}
-  else{b.style.display='none';}
-}
-
-function initComments(){
-  for(var i=1;i<=22;i++) renderQ(i);
-  updateBadge();
-}
-
-document.addEventListener('keydown',function(e){
-  if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){
-    var a=document.activeElement;
-    if(a&&a.classList.contains('q-comment-input')){
-      saveComment(parseInt(a.id.replace('ci','')));
-    }
+new Chart(document.getElementById('cScenariusze'), {
+  type: 'bar',
+  data: {
+    labels: ['Baseline\n(3%)', 'Oprocentowanie\n5,5%', 'Iran\n−3% PIT', 'Iran\n−6% PIT'],
+    datasets: [{ data: [3.72, 2.04, -0.46, -4.17],
+      backgroundColor: ['#2e7d52','#b35c00','#c0392b','#8b1a10'],
+      borderRadius: 4, borderWidth: 0 }]
+  },
+  options: { ...PL,
+    scales: { ...PL.scales, y: { ...PL.scales.y, min: -6, grid: { color: c => c.tick.value === 0 ? '#1a1814' : 'rgba(0,0,0,.06)' } } },
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ' ' + c.parsed.y.toFixed(2) + 'M zł wolnej nadwyżki' } } }
   }
 });
-
-window.addEventListener('load', initComments);
-
 </script>
 </body>
 </html>
